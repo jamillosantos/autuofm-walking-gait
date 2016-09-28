@@ -6,17 +6,17 @@
 #ifndef WALKING_CONFIGURATION_H
 #define WALKING_CONFIGURATION_H
 
-#include "vector.h"
-#include "angle.h"
+#include "../data/vector.h"
+#include "../data/angle.h"
 
 namespace mote
 {
 namespace walking
 {
-namespace data
-{
 namespace configuration
 {
+
+using namespace mote::walking::data;
 
 class Head
 {
@@ -87,7 +87,7 @@ public:
 	double elbowOffset;
 };
 
-class Robot
+class Walking
 {
 public:
 	Head head;
@@ -124,8 +124,9 @@ public:
 
 class Configuration
 {
+public:
+	Walking walking;
 };
-}
 }
 }
 
