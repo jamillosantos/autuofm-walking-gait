@@ -1,0 +1,132 @@
+/**
+ * @author J. Santos <jamillo@gmail.com>
+ * @date September 27, 2016
+ */
+
+#ifndef WALKING_CONFIGURATION_H
+#define WALKING_CONFIGURATION_H
+
+#include "vector.h"
+#include "angle.h"
+
+namespace mote
+{
+namespace walking
+{
+namespace data
+{
+namespace configuration
+{
+
+class Head
+{
+public:
+	double panSpeed;
+	double tiltSpeed;
+};
+
+class Fall
+{
+public:
+	float rollThreshold;
+	float pitchThreshold;
+};
+
+class WalkEngine
+{
+public:
+	double motionResolution ;
+	double gaitFrequency ;
+	double doubleSupportSleep ;
+	double singleSupportSleep ;
+
+	Angle3d flyGain;
+	Angle3d flySwingGain;
+	Angle3d supportGain;
+	Angle3d supportSwingGain;
+	Angle3d bodySwingGain;
+};
+
+class Stabilizer
+{
+public:
+	Angle2d armGain;
+
+	double armElbowGain;
+
+	Angle2d hipGain;
+	double kneeGain;
+
+	Angle2d footGain;
+
+	Vector2d comShiftGain;
+};
+
+class BodyCom
+{
+public:
+	Vector3d positionOffset;
+	Angle3d angleOffset;
+};
+
+class Leg
+{
+public:
+	Angle3d hipAngleOffset;
+	double kneeOffset;
+	Angle2d footOffset;
+
+	Vector3d positionOffset;
+	Angle3d angleOffset;
+};
+
+class Arm
+{
+public:
+	Vector2d angleOffset;
+	double elbowOffset;
+};
+
+class Robot
+{
+public:
+	Head head;
+
+	float minVoltage;
+
+	Fall fall;
+
+	Vector3d velocity; // = Vector3d(-0.07, 0.0, 0.001);
+
+	WalkEngine walkEngine;
+
+	Stabilizer stabilizer;
+	Stabilizer gyroStabilizer;
+
+	Vector2d hoppingGaitGain;
+
+	BodyCom com;
+
+	Leg rightLeg;
+	Leg leftLeg;
+
+	Arm rightArm;
+	Arm leftArm;
+
+	Vector2d imuOffset;
+	Vector2d gyroLowpassGain;
+
+	Angle3d kalmanRmRate;
+
+	Vector3d smoothingRatio;
+};
+}
+
+class Configuration
+{
+};
+}
+}
+}
+
+#endif //WALKING_CONFIGURATION_H
