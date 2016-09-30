@@ -96,6 +96,8 @@ public:
 
 	Fall fall;
 
+	double legLength;
+
 	Vector3d velocity; // = Vector3d(-0.07, 0.0, 0.001);
 
 	WalkEngine walkEngine;
@@ -125,7 +127,7 @@ public:
 class Configuration
 {
 public:
-	Walking walking;
+	configuration::Walking walking;
 };
 }
 }

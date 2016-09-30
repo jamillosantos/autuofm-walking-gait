@@ -17,5 +17,26 @@ set(SOURCE_FILES
 
 	src/engine/part.cpp
 	src/engine/part.h
-	src/engine/ik.cpp src/engine/ik.h src/data/configuration.cpp src/data/configuration.h src/data/angle.cpp src/data/angle.h src/sensors/imu.cpp src/sensors/imu.h src/sensors/gyro.cpp src/sensors/gyro.h)
+
+	src/engine/ik.cpp
+	src/engine/ik.h
+
+	src/configuration/configuration.cpp
+	src/configuration/configuration.h
+
+	src/data/angle.cpp
+	src/data/angle.h
+
+	src/sensors/imu.cpp
+	src/sensors/imu.h
+
+	src/sensors/gyro.cpp
+	src/sensors/gyro.h
+
+	src/sensors/mpu.cpp
+	src/sensors/mpu.h
+
+	src/motors/servo.cpp
+	src/motors/servo.h
+)
 add_executable(walking ${SOURCE_FILES})

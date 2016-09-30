@@ -7,6 +7,7 @@
 #define WALKING_GYRO_H
 
 #include "../data/angle.h"
+#include "../data/vector.h"
 
 namespace mote
 {
@@ -17,7 +18,7 @@ namespace sensors
 class Gyro
 {
 public:
-	mote::walking::data::Angle3d data;
+	mote::walking::data::Vector2d data;
 };
 }
 }

@@ -8,6 +8,7 @@
 
 #include <exception>
 #include "../data/vector.h"
+#include "../data/angle.h"
 
 namespace mote
 {
@@ -25,10 +26,7 @@ class Leg
 {
 public:
 	data::Vector3d position;
-
-	double pitch;
-	double roll;
-	double yaw;
+	data::Angle3d angle;
 
 	virtual void zero() override;
 };
