@@ -35,8 +35,10 @@ class Arm
 	: public Part
 {
 public:
-	data::Angle3d angle;
-	data::Angle3d velocity;
+	data::Angle2d angle;
+	double elbow;
+	data::Angle2d velocity;
+	double velocityElbow;
 
 	virtual void zero() override;
 	virtual void zero(double velocity);
