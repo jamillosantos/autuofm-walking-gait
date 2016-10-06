@@ -8,10 +8,12 @@
 
 #include <chrono>
 #include <thread>
+#include <cmath>
 
 #include "../data/vector.h"
 #include "../data/servo.h"
 #include "../configuration/configuration.h"
+#include "../consts.h"
 #include "ik.h"
 
 namespace mote
@@ -40,6 +42,16 @@ public:
 	Servo frontal;
 };
 */
+
+enum class RobotState
+{
+	FallenRight,
+	FallenLeft,
+	FallenBack,
+	FallenFront,
+	NormalStand
+};
+
 class Robot
 {
 private:
@@ -47,25 +59,21 @@ private:
 	float _velocityTheta;
 	Configuration &configuration;
 	HumanoidIK ik;
+	sensors::IMU imu;
+protected:
+	RobotState getRobotState(double roll, double pitch);
 public:
-// 	Hip rightHip;
-// 	Hip leftHip;
-//
-// 	Leg rightLeg;
-// 	Leg leftLeg;
-//
-// 	Ankle rightAnkle;
-// 	Ankle leftAnkle;
-
 	void run();
 
 	void init();
 
-	void standInit(double _Speed);
+	void standInit(double speed);
 
-	void Stand_Init_T(double _Speed, int T);
+	void standInitT(double speed, int time);
 
-	void Omni_Gait(double vx, double vy, double vt);
+	void omniGait(double vx, double vy, double vt);
+
+	void checkRobotState();
 };
 }
 }

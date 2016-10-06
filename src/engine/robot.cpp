@@ -3,10 +3,7 @@
  * @date September 20, 2016
  */
 
-#include <cmath>
 #include "robot.h"
-#include "part.h"
-#include "../consts.h"
 
 void mote::walking::Robot::run()
 {
@@ -15,10 +12,10 @@ void mote::walking::Robot::run()
 	this->_velocityTheta = 0;
 	// Buzzer(200);
 
-	this->Stand_Init_T(0.05, 1);
+	this->standInitT(0.05, 1);
 	std::sleep(1);
 	//stand for first time
-	this->Stand_Init_T(0.05, 300);
+	this->standInitT(0.05, 300);
 
 	Check_Robot_Fall=1; // Check_Robot_Fall==1;??
 	//main task loop
@@ -37,7 +34,7 @@ void mote::walking::Robot::run()
 			)
 			&& (System_Voltage >= (int)WEP[P_Min_Voltage_Limit])
 		) {
-			this->Stand_Init_T(0.5,50);
+			this->standInitT(0.5, 50);
 
 			//start gait
 			// WEP[P_Left_Leg_Y_Offset]=-50;
@@ -45,9 +42,9 @@ void mote::walking::Robot::run()
 			// WEP[P_Right_Leg_Y_Offset]=50;
 			this->configuration.walking.rightLeg.positionOffset.y = 50;
 
-			this->Stand_Init_T(1.0,4);  // last one was 2
+			this->standInitT(1.0, 4);  // last one was 2
 			Set_Walk_Engine_Parameters((byte)Teen_Size_Robot_Num);
-			this->Omni_Gait(WEP[Vx_Offset],WEP[Vy_Offset],WEP[Vt_Offset]); //execute omni-directional start gait
+			this->omniGait(WEP[Vx_Offset], WEP[Vy_Offset], WEP[Vt_Offset]); //execute omni-directional start gait
 
 			//main gait
 			while((
@@ -61,10 +58,10 @@ void mote::walking::Robot::run()
 				  )
 				  && (System_Voltage >= (int)WEP[P_Min_Voltage_Limit])
 			)
-				this->Omni_Gait(Vx+WEP[Vx_Offset],Vy+WEP[Vy_Offset],Vt+WEP[Vt_Offset]); // execute omni-directional gait
+				this->omniGait(Vx + WEP[Vx_Offset], Vy + WEP[Vy_Offset], Vt + WEP[Vt_Offset]); // execute omni-directional gait
 
 			//finish gate
-			this->Omni_Gait(WEP[Vx_Offset],WEP[Vy_Offset],WEP[Vt_Offset]); //execute omni-directional end gait
+			this->omniGait(WEP[Vx_Offset], WEP[Vy_Offset], WEP[Vt_Offset]); //execute omni-directional end gait
 		}
 		else
 		{
@@ -87,11 +84,11 @@ void mote::walking::Robot::run()
 
 					Check_Robot_Fall = 0;
 					Actuators_Update = 1;
-					this->Stand_Init_T(1.0, 10);
+					this->standInitT(1.0, 10);
 					//Internal_Motion_Request=No_Motion;
 					Motion_Stand_Up_Front((byte)Teen_Size_Robot_Num);
 					Internal_Motion_Request = No_Motion;
-					this->Stand_Init_T(1.0, 10);
+					this->standInitT(1.0, 10);
 					Check_Robot_Fall = 1;
 					break;
 
@@ -102,11 +99,11 @@ void mote::walking::Robot::run()
 
 					Check_Robot_Fall = 0;
 					Actuators_Update = 1;
-					this->Stand_Init_T(1.0, 10);
+					this->standInitT(1.0, 10);
 					//Internal_Motion_Request=No_Motion;
 					Motion_Stand_Up_Back((byte)Teen_Size_Robot_Num);
 					Internal_Motion_Request = No_Motion;
-					this->Stand_Init_T(1.0, 10);
+					this->standInitT(1.0, 10);
 					Check_Robot_Fall=1;
 					break;
 			}
@@ -118,28 +115,28 @@ void mote::walking::Robot::run()
 					//run motion 1
 					//initialize head joint
 					Set_Head(0,0.5,500,500);
-					this->Stand_Init_T(1.0, 25);
+					this->standInitT(1.0, 25);
 					Run_R_Kik_Motion((byte)Teen_Size_Robot_Num);
-					this->Stand_Init_T(1.0, 70);
+					this->standInitT(1.0, 70);
 					Motion_Ins=No_Motion;
 					break;
 
 				case (byte)Motion_2:
 					//run motion 2
 					Set_Head(0,0.5,500,500);
-					this->Stand_Init_T(1.0, 25);
+					this->standInitT(1.0, 25);
 					Run_L_Kik_Motion((byte)Teen_Size_Robot_Num);
-					this->Stand_Init_T(1.0, 70);
+					this->standInitT(1.0, 70);
 					Motion_Ins = No_Motion;
 					break;
 
 				case (byte)Motion_3:
-					this->Stand_Init_T(1.0, 10);
+					this->standInitT(1.0, 10);
 					Motion_Ins = No_Motion;
 					break;
 
 				case (byte)Motion_4:
-					this->Stand_Init_T(1.0, 10);
+					this->standInitT(1.0, 10);
 					Motion_Ins = No_Motion;
 					break;
 
@@ -182,7 +179,7 @@ void mote::walking::Robot::init()
 	Internal_Motion_Request = No_Motion;
 }
 
-void mote::walking::Robot::standInit(double _Speed)
+void mote::walking::Robot::standInit(double speed)
 {
 	Leg
 		leftLeg, rightLeg;
@@ -205,19 +202,19 @@ void mote::walking::Robot::standInit(double _Speed)
 	rightLeg.zero();
 
 	leftArm.zero();
-	leftArm.velocity.pitch = leftArm.velocity.roll = leftArm.velocityElbow = _Speed;
+	leftArm.velocity.pitch = leftArm.velocity.roll = leftArm.velocityElbow = speed;
 
 	//left arm initialize
 	rightArm.zero();
-	rightArm.velocity.pitch = rightArm.velocity.roll = rightArm.velocityElbow = _Speed;
+	rightArm.velocity.pitch = rightArm.velocity.roll = rightArm.velocityElbow = speed;
 
 	//update robotis joints
 	// this->Update_Ik(_Speed, _Speed, R_Leg_Ik, L_Leg_Ik, R_Arm, L_Arm);
-	this->ik.update(_Speed, _Speed, rightLeg, leftLeg, rightArm, leftArm);
+	this->ik.update(speed, speed, rightLeg, leftLeg, rightArm, leftArm);
 }
 
 //initialize robot to stand
-void mote::walking::Robot::Stand_Init_T(double _Speed, int T)
+void mote::walking::Robot::standInitT(double speed, int time)
 {
 	Leg
 		L_Leg_Ik,  // x, y, z, roll, pitch, yaw
@@ -227,7 +224,7 @@ void mote::walking::Robot::Stand_Init_T(double _Speed, int T)
 		R_Arm;     // pitch, roll, elbow, vp, vr, ve
 
 		//update robotis joints
-	for (unsigned int Cnt = 0; Cnt <= T; Cnt++)
+	for (unsigned int i = 0; i <= time; i++)
 	{
 		//right leg initialize
 		// R_Leg_Ik.position.x[I_X] = 0.0;
@@ -257,8 +254,8 @@ void mote::walking::Robot::Stand_Init_T(double _Speed, int T)
 		// R_Arm[I_A_Vp] = _Speed;
 		// R_Arm[I_A_Vr] = _Speed;
 		// R_Arm[I_A_Ve] = _Speed;
-		R_Arm.velocity.set(_Speed);
-		R_Arm.velocityElbow = _Speed;
+		R_Arm.velocity.set(speed);
+		R_Arm.velocityElbow = speed;
 
 		//left arm initialize
 		// L_Arm[I_A_Pitch] = 0.0;
@@ -269,17 +266,17 @@ void mote::walking::Robot::Stand_Init_T(double _Speed, int T)
 		// L_Arm[I_A_Vp] = _Speed;
 		// L_Arm[I_A_Vr] = _Speed;
 		// L_Arm[I_A_Ve] = _Speed;
-		L_Arm.velocity.set(_Speed);
-		L_Arm.velocityElbow = _Speed;
+		L_Arm.velocity.set(speed);
+		L_Arm.velocityElbow = speed;
 
-		this->ik.update(_Speed, _Speed, R_Leg_Ik, L_Leg_Ik, R_Arm, L_Arm);
+		this->ik.update(speed, speed, R_Leg_Ik, L_Leg_Ik, R_Arm, L_Arm);
 		std::this_thread::sleep_for(std::chrono::duration<std::chrono::milliseconds>(20));
 		//vTaskDelay(20);
 	}
 }
 
 //omni directional gaite generation
-void mote::walking::Robot::Omni_Gait(double vx, double vy, double vt)
+void mote::walking::Robot::omniGait(double vx, double vy, double vt)
 {
 	Leg
 		leftLeg,  // x, y, z, roll, pitch, yaw
@@ -474,135 +471,93 @@ void mote::walking::Robot::Omni_Gait(double vx, double vy, double vt)
 }
 
 //get robot state for fall detection
-byte Get_Robot_State(double Roll, double Pitch){
-	if(Roll>=WEP[P_Fall_Roll_Thershold]){
-		return Fallen_Left;
-	}
+//byte Get_Robot_State(double Roll, double Pitch){
+mote::walking::RobotState mote::walking::Robot::getRobotState(double roll, double pitch)
+{
+//	if(Roll>=WEP[P_Fall_Roll_Thershold]){
+//		return Fallen_Left;
+//	}
+	if(roll >= this->configuration.walking.fall.rollThreshold)
+		return mote::walking::RobotState::FallenLeft;
+//	if(Roll<=(-WEP[P_Fall_Roll_Thershold])){
+//		return Fallen_Right;
+//	}
+	if (roll <= (-this->configuration.walking.fall.rollThreshold))
+		return mote::walking::RobotState::FallenRight;
+//	if(Pitch>=WEP[P_Fall_Pitch_Thershold]){
+//		return Fallen_Front;
+//	}
+	if (pitch >= this->configuration.walking.fall.pitchThreshold)
+		return mote::walking::RobotState::FallenFront;
+//	if(Pitch<=(-WEP[P_Fall_Pitch_Thershold])){
+//		return Fallen_Back;
+//	}
+	if(pitch <= (-this->configuration.walking.fall.pitchThreshold))
+		return mote::walking::RobotState::FallenBack;
 
-	if(Roll<=(-WEP[P_Fall_Roll_Thershold])){
-		return Fallen_Right;
-	}
-
-	if(Pitch>=WEP[P_Fall_Pitch_Thershold]){
-		return Fallen_Front;
-	}
-
-	if(Pitch<=(-WEP[P_Fall_Pitch_Thershold])){
-		return Fallen_Back;
-	}
-	return Normal_Stand;
+//	return Normal_Stand;
+	return mote::walking::RobotState::NormalStand;
 }
 
 //check robot state and run the stand function
-void Robot_State(){
-	switch (Get_Robot_State(MPU_Y, MPU_X)){
-		case (byte)Fallen_Front:{
-			//run stand motion from front
-			Check_Robot_Fall=0;
+// void Robot_State(){
+void mote::walking::Robot::checkRobotState()
+{
+//	switch (Get_Robot_State(MPU_Y, MPU_X)){
+	mote::walking::RobotState state = this->getRobotState(this->imu.mpu.position.y, this->imu.mpu.position.x);
+	if (state != RobotState::NormalStand)
+	{
+		// run stand motion from front
 
-			vTaskSuspendAll();
+		Check_Robot_Fall = 0;
 
-			Dxl.writeByte(BROADCAST_ID,P_TORQUE_ENABLE,0);
-			Dxl.writeByte(Id_Head_Pan,P_TORQUE_ENABLE,1);
-			Dxl.writeByte(Id_Head_Tilt,P_TORQUE_ENABLE,1);
+		// TODO: Turn all motors off, but head motors, when falling (uncomment the following code).
 
-			Set_Head(0,-0.4,1023,1023);
-			Dxl.setPosition(Id_Head_Pan,2048+(((int)((Head_Pan_Angle*RAD2DEG)*DEG2DXL))*1),(int)Head_Pan_Speed);
-			Dxl.setPosition(Id_Head_Tilt,2048+(((int)(((Head_Tilt_Angle-MPU_X)*RAD2DEG)*DEG2DXL))*1),(int)Head_Tilt_Speed);
+		// vTaskSuspendAll();
 
-			Dxl.writeByte(Id_Right_Hip_Yaw,P_TORQUE_ENABLE,1);
-			Dxl.writeByte(Id_Left_Hip_Yaw,P_TORQUE_ENABLE,1);
+		// Dxl.writeByte(BROADCAST_ID,P_TORQUE_ENABLE,0);
+		// Dxl.writeByte(Id_Head_Pan,P_TORQUE_ENABLE,1);
+		// Dxl.writeByte(Id_Head_Tilt,P_TORQUE_ENABLE,1);
 
-			Dxl.writeByte(Id_Right_Hip_Roll,P_TORQUE_ENABLE,1);
-			Dxl.writeByte(Id_Left_Hip_Roll,P_TORQUE_ENABLE,1);
-
-			xTaskResumeAll();
-
-			Internal_Motion_Request=Stand_Up_Front;
-			//Buzzer(200);
-			vTaskDelay(1500);
-			Check_Robot_Fall=1;
+		switch (state)
+		{
+			case mote::walking::RobotState::FallenFront:
+			case mote::walking::RobotState::FallenRight:
+				this->Set_Head(0, -0.4, 1023, 1023);
+				break;
+			case mote::walking::RobotState::FallenBack:
+			case mote::walking::RobotState::FallenLeft:
+				this->Set_Head(0, 0.4, 1023, 1023);
+				break;
 		}
-			break;
-		case (byte)Fallen_Back:{
-			//run stand motion from front
-			Check_Robot_Fall=0;
 
-			vTaskSuspendAll();
-			Dxl.writeByte(BROADCAST_ID,P_TORQUE_ENABLE,0);
-			Dxl.writeByte(Id_Head_Pan,P_TORQUE_ENABLE,1);
-			Dxl.writeByte(Id_Head_Tilt,P_TORQUE_ENABLE,1);
+		// TODO: Set the position of the head and enable hip. (Uncomment this part).
+		/*
+		Dxl.setPosition(Id_Head_Pan,2048+(((int)((Head_Pan_Angle*RAD2DEG)*DEG2DXL))*1),(int)Head_Pan_Speed);
+		Dxl.setPosition(Id_Head_Tilt,2048+(((int)(((Head_Tilt_Angle-MPU_X)*RAD2DEG)*DEG2DXL))*1),(int)Head_Tilt_Speed);
 
-			Set_Head(0,0.4,1023,1023);
-			Dxl.setPosition(Id_Head_Pan,2048+(((int)((Head_Pan_Angle*RAD2DEG)*DEG2DXL))*1),(int)Head_Pan_Speed);
-			Dxl.setPosition(Id_Head_Tilt,2048+(((int)(((Head_Tilt_Angle-MPU_X)*RAD2DEG)*DEG2DXL))*1),(int)Head_Tilt_Speed);
+		Dxl.writeByte(Id_Right_Hip_Yaw,P_TORQUE_ENABLE,1);
+		Dxl.writeByte(Id_Left_Hip_Yaw,P_TORQUE_ENABLE,1);
 
-			Dxl.writeByte(Id_Right_Hip_Yaw,P_TORQUE_ENABLE,1);
-			Dxl.writeByte(Id_Left_Hip_Yaw,P_TORQUE_ENABLE,1);
+		Dxl.writeByte(Id_Right_Hip_Roll,P_TORQUE_ENABLE,1);
+		Dxl.writeByte(Id_Left_Hip_Roll,P_TORQUE_ENABLE,1);
 
-			Dxl.writeByte(Id_Right_Hip_Roll,P_TORQUE_ENABLE,1);
-			Dxl.writeByte(Id_Left_Hip_Roll,P_TORQUE_ENABLE,1);
+		xTaskResumeAll();
+		*/
 
-			xTaskResumeAll();
-
-			Internal_Motion_Request=Stand_Up_Back;
-			vTaskDelay(1500);
-			Check_Robot_Fall=1;
-			//Buzzer(200);
+		switch (state)
+		{
+			case mote::walking::RobotState::FallenFront:
+			case mote::walking::RobotState::FallenRight:
+			case mote::walking::RobotState::FallenLeft:
+				Internal_Motion_Request = Stand_Up_Front;
+				break;
+			case mote::walking::RobotState::FallenBack:
+				Internal_Motion_Request = Stand_Up_Back;
+				break;
 		}
-			break;
-		case (byte)Fallen_Right:{
-			//run stand motion from front
-			Check_Robot_Fall=0;
-			vTaskSuspendAll();
-			Dxl.writeByte(BROADCAST_ID,P_TORQUE_ENABLE,0);
-			Dxl.writeByte(Id_Head_Pan,P_TORQUE_ENABLE,1);
-			Dxl.writeByte(Id_Head_Tilt,P_TORQUE_ENABLE,1);
-
-			Set_Head(0,-0.4,1023,1023);
-			Dxl.setPosition(Id_Head_Pan,2048+(((int)((Head_Pan_Angle*RAD2DEG)*DEG2DXL))*1),(int)Head_Pan_Speed);
-			Dxl.setPosition(Id_Head_Tilt,2048+(((int)(((Head_Tilt_Angle-MPU_X)*RAD2DEG)*DEG2DXL))*1),(int)Head_Tilt_Speed);
-
-			Dxl.writeByte(Id_Right_Hip_Yaw,P_TORQUE_ENABLE,1);
-			Dxl.writeByte(Id_Left_Hip_Yaw,P_TORQUE_ENABLE,1);
-
-			Dxl.writeByte(Id_Right_Hip_Roll,P_TORQUE_ENABLE,1);
-			Dxl.writeByte(Id_Left_Hip_Roll,P_TORQUE_ENABLE,1);
-			xTaskResumeAll();
-
-			Internal_Motion_Request=Stand_Up_Front;
-			//Buzzer(200);
-			vTaskDelay(1500);
-			Check_Robot_Fall=1;
-		}
-			break;
-		case (byte)Fallen_Left:{
-			//run stand motion from front
-			Check_Robot_Fall=0;
-			vTaskSuspendAll();
-			Dxl.writeByte(BROADCAST_ID,P_TORQUE_ENABLE,0);
-			Dxl.writeByte(Id_Head_Pan,P_TORQUE_ENABLE,1);
-			Dxl.writeByte(Id_Head_Tilt,P_TORQUE_ENABLE,1);
-
-			Set_Head(0,0.4,1023,1023);
-			Dxl.setPosition(Id_Head_Pan,2048+(((int)((Head_Pan_Angle*RAD2DEG)*DEG2DXL))*1),(int)Head_Pan_Speed);
-			Dxl.setPosition(Id_Head_Tilt,2048+(((int)(((Head_Tilt_Angle-MPU_X)*RAD2DEG)*DEG2DXL))*1),(int)Head_Tilt_Speed);
-
-			Dxl.writeByte(Id_Right_Hip_Yaw,P_TORQUE_ENABLE,1);
-			Dxl.writeByte(Id_Left_Hip_Yaw,P_TORQUE_ENABLE,1);
-
-			Dxl.writeByte(Id_Right_Hip_Roll,P_TORQUE_ENABLE,1);
-			Dxl.writeByte(Id_Left_Hip_Roll,P_TORQUE_ENABLE,1);
-			xTaskResumeAll();
-
-			Internal_Motion_Request=Stand_Up_Front;
-			//Buzzer(200);
-			vTaskDelay(1500);
-			Check_Robot_Fall=1;
-		}
-			break;
-		case (byte)Normal_Stand:
-			//Internal_Motion_Request
-			break;
-	}//switch case
+		// vTaskDelay(1500);
+		std::sleep(1.5);
+		Check_Robot_Fall=1;
+	}
 }

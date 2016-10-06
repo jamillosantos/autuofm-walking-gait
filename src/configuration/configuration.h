@@ -28,8 +28,8 @@ public:
 class Fall
 {
 public:
-	float rollThreshold;
-	float pitchThreshold;
+	double rollThreshold;
+	double pitchThreshold;
 };
 
 class WalkEngine
