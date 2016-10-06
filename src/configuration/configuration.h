@@ -35,16 +35,16 @@ public:
 class WalkEngine
 {
 public:
-	double motionResolution ;
-	double gaitFrequency ;
-	double doubleSupportSleep ;
-	double singleSupportSleep ;
+	double motionResolution;
+	double gaitFrequency;
+	double doubleSupportSleep;
+	double singleSupportSleep;
 
 	Angle3d flyGain;
-	Angle3d flySwingGain;
+	Vector3d flySwingGain;
 	Angle3d supportGain;
-	Angle3d supportSwingGain;
-	Angle3d bodySwingGain;
+	Vector3d supportSwingGain;
+	Vector3d bodySwingGain;
 };
 
 class Stabilizer

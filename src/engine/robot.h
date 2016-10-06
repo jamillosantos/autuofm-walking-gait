@@ -11,6 +11,8 @@
 
 #include "../data/vector.h"
 #include "../data/servo.h"
+#include "../configuration/configuration.h"
+#include "ik.h"
 
 namespace mote
 {
@@ -43,6 +45,8 @@ class Robot
 private:
 	data::Vector3d _velocity;
 	float _velocityTheta;
+	Configuration &configuration;
+	HumanoidIK ik;
 public:
 // 	Hip rightHip;
 // 	Hip leftHip;

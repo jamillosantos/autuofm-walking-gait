@@ -5,7 +5,6 @@
 
 #include <algorithm>
 #include "ik.h"
-#include "robot.h"
 
 mote::walking::HumanoidIK::HumanoidIK(mote::walking::Humanoid &humanoid, mote::walking::Configuration &configuration,
 	sensors::IMU &imu)

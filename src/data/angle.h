@@ -31,6 +31,11 @@ public:
 		: pitch(angle.pitch), roll(angle.roll)
 	{ }
 
+	virtual void set(T value)
+	{
+		this->pitch this->roll = value;
+	}
+
 	virtual void zero()
 	{
 		this->pitch = 0;
@@ -59,6 +64,11 @@ public:
 	Angle3(Angle2<T>& angle)
 		: Angle2<T>(angle), yaw(0)
 	{ }
+
+	virtual void set(T value) override
+	{
+		this->pitch = this->roll = this->yaw = value;
+	}
 
 	virtual void zero() override
 	{

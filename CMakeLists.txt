@@ -38,5 +38,5 @@ set(SOURCE_FILES
 
 	src/motors/servo.cpp
 	src/motors/servo.h
-)
+	src/consts.h)
 add_executable(walking ${SOURCE_FILES})
