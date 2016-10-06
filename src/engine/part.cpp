@@ -8,13 +8,19 @@
 void mote::walking::Leg::zero()
 {
 	this->position.zero();
-	this->pitch = this->roll = this->yaw = 0;
+	this->angle.zero();
 }
 
 void mote::walking::Arm::zero()
 {
 	this->elbow = this->pitch = this->elbow = 0;
 	this->velocityElbow = this->velocityPitch = this->velocityElbow = 0;
+}
+
+void mote::walking::Arm::zero(double velocity)
+{
+	this->elbow = this->pitch = this->elbow = 0;
+	this->velocityElbow = this->velocityPitch = this->velocityElbow = velocity;
 }
 
 void mote::walking::Head::zero()

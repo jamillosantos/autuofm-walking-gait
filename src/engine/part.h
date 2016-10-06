@@ -35,15 +35,11 @@ class Arm
 	: public Part
 {
 public:
-	double pitch;
-	double roll;
-	double elbow;
-
-	double velocityPitch;
-	double velocityRoll;
-	double velocityElbow;
+	data::Angle3d angle;
+	data::Angle3d velocity;
 
 	virtual void zero() override;
+	virtual void zero(double velocity);
 };
 
 class Head
@@ -51,6 +47,30 @@ class Head
 {
 public:
 	virtual void zero() override;
+};
+
+class Hip
+	: public Part
+{
+public:
+	data::Angle3d angle;
+	data::Angle3d velocity;
+};
+
+class Knee
+	: public Part
+{
+public:
+	double velocity;
+	double angle;
+};
+
+class Foot
+	: public Part
+{
+public:
+	data::Angle2d angle;
+	data::Angle2d velocity;
 };
 
 class Humanoid:
@@ -62,6 +82,12 @@ public:
 	Arm leftArm;
 	Leg rightLeg;
 	Leg leftLeg;
+	Hip rightHip;
+	Hip leftHip;
+	Knee rightKnee;
+	Knee leftKnee;
+	Foot rightFoot;
+	Foot leftFoot;
 };
 
 }
