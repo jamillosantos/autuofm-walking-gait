@@ -83,7 +83,7 @@ public:
 class Arm
 {
 public:
-	Vector2d angleOffset;
+	Angle2d angleOffset;
 	double elbowOffset;
 };
 
