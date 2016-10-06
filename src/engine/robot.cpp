@@ -180,8 +180,10 @@ void mote::walking::Robot::init()
 
 void mote::walking::Robot::standInit(double _Speed)
 {
-	Leg leftLeg, rightLeg;
-	Arm leftArm, rightArm;
+	Leg
+		leftLeg, rightLeg;
+	Arm
+		leftArm, rightArm;
 
 	/*
 	double L_Leg_Ik[6];  // x, y, z, roll, pitch, yaw
@@ -206,7 +208,8 @@ void mote::walking::Robot::standInit(double _Speed)
 	rightArm.velocityPitch = rightArm.velocityRoll = rightArm.velocityElbow = _Speed;
 
 	//update robotis joints
-	this->Update_Ik(_Speed, _Speed, R_Leg_Ik, L_Leg_Ik, R_Arm, L_Arm);
+	// this->Update_Ik(_Speed, _Speed, R_Leg_Ik, L_Leg_Ik, R_Arm, L_Arm);
+	this->Update_Ik(_Speed, _Speed, rightLeg, leftLeg, rightArm, leftArm);
 }
 
 //initialize robot to stand

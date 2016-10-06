@@ -16,7 +16,7 @@ namespace mote
 {
 namespace walking
 {
-
+/*
 class Ankle
 {
 public:
@@ -37,21 +37,21 @@ public:
 	Servo lateral;
 	Servo frontal;
 };
-
+*/
 class Robot
 {
 private:
 	data::Vector3d _velocity;
 	float _velocityTheta;
 public:
-	Hip rightHip;
-	Hip leftHip;
-
-	Leg rightLeg;
-	Leg leftLeg;
-
-	Ankle rightAnkle;
-	Ankle leftAnkle;
+// 	Hip rightHip;
+// 	Hip leftHip;
+//
+// 	Leg rightLeg;
+// 	Leg leftLeg;
+//
+// 	Ankle rightAnkle;
+// 	Ankle leftAnkle;
 
 	void run();
 
