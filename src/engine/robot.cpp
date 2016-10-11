@@ -9,15 +9,14 @@ void mote::walking::Robot::run()
 {
 	this->init();
 	this->_velocity.zero();
-	this->_velocityTheta = 0;
 	// Buzzer(200);
 
 	this->standInitT(0.05, 1);
-	std::sleep(1);
+	std::this_thread::sleep_for(std::chrono::seconds(1));
 	//stand for first time
 	this->standInitT(0.05, 300);
 
-	Check_Robot_Fall=1; // Check_Robot_Fall==1;??
+	this->Check_Robot_Fall = 1; // Check_Robot_Fall==1;??
 	//main task loop
 	for( ;; )
 	{
@@ -27,12 +26,13 @@ void mote::walking::Robot::run()
 				(
 					(this->_velocity.x != 0)
 					|| (this->_velocity.y != 0)
-					|| (this->_velocityTheta != 0)
+					|| (this->_velocity.theta != 0)
 				)
-				&& (Motion_Ins == No_Motion)
-				&& (Internal_Motion_Request == No_Motion)
+				&& (this->Motion_Ins == No_Motion)
+				&& (this->Internal_Motion_Request == No_Motion)
 			)
-			&& (System_Voltage >= (int)WEP[P_Min_Voltage_Limit])
+			// && (this->System_Voltage >= (int)WEP[P_Min_Voltage_Limit])
+			&& (this->System_Voltage >= this->configuration.walking.minVoltage)
 		) {
 			this->standInitT(0.5, 50);
 
@@ -43,78 +43,104 @@ void mote::walking::Robot::run()
 			this->configuration.walking.rightLeg.positionOffset.y = 50;
 
 			this->standInitT(1.0, 4);  // last one was 2
-			Set_Walk_Engine_Parameters((byte)Teen_Size_Robot_Num);
-			this->omniGait(WEP[Vx_Offset], WEP[Vy_Offset], WEP[Vt_Offset]); //execute omni-directional start gait
+
+			// NEW: Probably we will not need this line anymore, since all parameters are loaded when it starts.
+			// Set_Walk_Engine_Parameters((byte)Teen_Size_Robot_Num);
+
+			//this->omniGait(WEP[Vx_Offset], WEP[Vy_Offset], WEP[Vt_Offset]); //execute omni-directional start gait
+			this->omniGait(
+				this->configuration.walking.velocityOffset.x,
+				this->configuration.walking.velocityOffset.y,
+				this->configuration.walking.velocityOffset.theta
+			); //execute omni-directional start gait
 
 			//main gait
 			while((
 					(
 						(this->_velocity.x != 0)
 						|| (this->_velocity.y != 0)
-						|| (this->_velocityTheta != 0)
+						|| (this->_velocity.theta != 0)
 					)
-					&& (Motion_Ins == No_Motion)
-					&& (Internal_Motion_Request == No_Motion)
+					&& (this->Motion_Ins == No_Motion)
+					&& (this->Internal_Motion_Request == No_Motion)
 				  )
-				  && (System_Voltage >= (int)WEP[P_Min_Voltage_Limit])
+				  // && (this->System_Voltage >= (int)WEP[P_Min_Voltage_Limit])
+				  && (this->System_Voltage >= this->configuration.walking.minVoltage)
 			)
-				this->omniGait(Vx + WEP[Vx_Offset], Vy + WEP[Vy_Offset], Vt + WEP[Vt_Offset]); // execute omni-directional gait
+				// this->omniGait(Vx + WEP[Vx_Offset], Vy + WEP[Vy_Offset], Vt + WEP[Vt_Offset]); // execute omni-directional gait
+				this->omniGait(
+					this->_velocity.x + this->configuration.walking.velocityOffset.x,
+					this->_velocity.y + this->configuration.walking.velocityOffset.y,
+					this->_velocity.theta + this->configuration.walking.velocityOffset.theta
+				); // execute omni-directional gait
 
 			//finish gate
-			this->omniGait(WEP[Vx_Offset], WEP[Vy_Offset], WEP[Vt_Offset]); //execute omni-directional end gait
+			// this->omniGait(WEP[Vx_Offset], WEP[Vy_Offset], WEP[Vt_Offset]); //execute omni-directional end gait
+			this->omniGait(
+				this->configuration.walking.velocityOffset.x,
+				this->configuration.walking.velocityOffset.y,
+				this->configuration.walking.velocityOffset.theta
+			); //execute omni-directional end gait
 		}
 		else
 		{
 			//firts run gait generation with vx=vy=vt=0 for semi gait generation to stand position
-			if (Internal_Motion_Request == No_Motion)
+			if (this->Internal_Motion_Request == No_Motion)
 				this->standInit(0.5);
 
-			if (Internal_Motion_Request == Stop_Motion)
+			if (this->Internal_Motion_Request == Stop_Motion)
 				this->standInit(0.05);
 
-			vTaskDelay(20);
+			//vTaskDelay(20);
+			std::this_thread::sleep_for(std::chrono::milliseconds(20));
 
 			//run standup motions
-			switch(Internal_Motion_Request)
+			switch(this->Internal_Motion_Request)
 			{ //check for instrcation
 				case Stand_Up_Front:
 					//run stand up
 					// vTaskDelay(1000);
-					std::sleep(1);
+					std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
-					Check_Robot_Fall = 0;
-					Actuators_Update = 1;
+					this->Check_Robot_Fall = 0;
+					this->Actuators_Update = 1;
 					this->standInitT(1.0, 10);
-					//Internal_Motion_Request=No_Motion;
-					Motion_Stand_Up_Front((byte)Teen_Size_Robot_Num);
-					Internal_Motion_Request = No_Motion;
+
+					// TODO: Uncomment line below!
+					// Motion_Stand_Up_Front((byte)Teen_Size_Robot_Num);
+
+					this->Internal_Motion_Request = No_Motion;
 					this->standInitT(1.0, 10);
-					Check_Robot_Fall = 1;
+					this->Check_Robot_Fall = 1;
 					break;
 
-				case (byte)Stand_Up_Back:
+				case Stand_Up_Back:
 					//run stand up
 					// vTaskDelay(1000);
-					std::sleep(1);
+					std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
 					Check_Robot_Fall = 0;
 					Actuators_Update = 1;
 					this->standInitT(1.0, 10);
-					//Internal_Motion_Request=No_Motion;
-					Motion_Stand_Up_Back((byte)Teen_Size_Robot_Num);
+
+					// TODO: Uncomment line below!
+					// Motion_Stand_Up_Back((byte)Teen_Size_Robot_Num);
+
 					Internal_Motion_Request = No_Motion;
 					this->standInitT(1.0, 10);
 					Check_Robot_Fall=1;
 					break;
 			}
 
+			// TODO: Add support for recording motions.
+			/*
 			//run the motion
 			switch(Motion_Ins)
 			{  //check for instrcation
 				case (byte)Motion_1:
 					//run motion 1
 					//initialize head joint
-					Set_Head(0,0.5,500,500);
+					this->setHead(0,0.5,500,500);
 					this->standInitT(1.0, 25);
 					Run_R_Kik_Motion((byte)Teen_Size_Robot_Num);
 					this->standInitT(1.0, 70);
@@ -123,7 +149,7 @@ void mote::walking::Robot::run()
 
 				case (byte)Motion_2:
 					//run motion 2
-					Set_Head(0,0.5,500,500);
+					this->setHead(0,0.5,500,500);
 					this->standInitT(1.0, 25);
 					Run_L_Kik_Motion((byte)Teen_Size_Robot_Num);
 					this->standInitT(1.0, 70);
@@ -164,6 +190,7 @@ void mote::walking::Robot::run()
 					Motion_Ins = No_Motion;
 					break;
 			}//external motion request switch
+			*/
 		}//main if/else
 	}
 }
@@ -173,7 +200,7 @@ void mote::walking::Robot::init()
 	this->standInit(0.1);  //ititialie robot to stand position
 
 	this->_velocity.zero();
-	this->_velocityTheta = 0;
+	this->_velocity.theta = 0;
 
 	Motion_Ins = No_Motion;
 	Internal_Motion_Request = No_Motion;
@@ -270,7 +297,7 @@ void mote::walking::Robot::standInitT(double speed, int time)
 		L_Arm.velocityElbow = speed;
 
 		this->ik.update(speed, speed, R_Leg_Ik, L_Leg_Ik, R_Arm, L_Arm);
-		std::this_thread::sleep_for(std::chrono::duration<std::chrono::milliseconds>(20));
+		std::this_thread::sleep_for(std::chrono::milliseconds(20));
 		//vTaskDelay(20);
 	}
 }
@@ -324,9 +351,10 @@ void mote::walking::Robot::omniGait(double vx, double vy, double vt)
 			)
 			|| (t == 0.0)
 		)
+		{
 			// vTaskDelay(WEP[P_Double_Support_Sleep]);
-			// TODO: Put sleep to work.
-			std::sleep(this->configuration.walking.walkEngine.doubleSupportSleep);
+			std::this_thread::sleep_for(std::chrono::milliseconds(this->configuration.walking.walkEngine.doubleSupportSleep));
+		}
 
 		if (
 			(
@@ -342,9 +370,10 @@ void mote::walking::Robot::omniGait(double vx, double vy, double vt)
 				&& (t <= (M_32_PIl + this->configuration.walking.walkEngine.motionResolution))
 			)
 		)
+		{
 			// vTaskDelay(WEP[P_Single_Support_Sleep]);
-			// TODO: Put sleep to work
-			std::sleep(this->configuration.walking.walkEngine.singleSupportSleep);
+			std::this_thread::sleep_for(std::chrono::milliseconds(this->configuration.walking.walkEngine.singleSupportSleep));
+		}
 
 		/**
 		 * Right leg initialization
@@ -466,7 +495,9 @@ void mote::walking::Robot::omniGait(double vx, double vy, double vt)
 		// Update_Ik(Joint_Speed, Joint_Speed, R_Leg_Ik, L_Leg_Ik, R_Arm, L_Arm);
 		this->ik.update(Joint_Speed, Joint_Speed, rightLeg, leftLeg, rightArm, leftArm);
 		// vTaskDelay(WEP[P_Gait_Frequency]*100);
-		std::sleep(this->configuration.walking.walkEngine.gaitFrequency);
+		std::this_thread::sleep_for(std::chrono::milliseconds(
+			(unsigned int) std::round(this->configuration.walking.walkEngine.gaitFrequency * 100))
+		);
 	}//main gait timi for ins
 }
 
@@ -523,11 +554,11 @@ void mote::walking::Robot::checkRobotState()
 		{
 			case mote::walking::RobotState::FallenFront:
 			case mote::walking::RobotState::FallenRight:
-				this->Set_Head(0, -0.4, 1023, 1023);
+				this->setHead(0, -0.4, 1023, 1023);
 				break;
 			case mote::walking::RobotState::FallenBack:
 			case mote::walking::RobotState::FallenLeft:
-				this->Set_Head(0, 0.4, 1023, 1023);
+				this->setHead(0, 0.4, 1023, 1023);
 				break;
 		}
 
@@ -557,7 +588,38 @@ void mote::walking::Robot::checkRobotState()
 				break;
 		}
 		// vTaskDelay(1500);
-		std::sleep(1.5);
+		std::this_thread::sleep_for(std::chrono::milliseconds(1500));
 		Check_Robot_Fall=1;
 	}
+}
+
+//void Set_Head(double Pan, double Tilt, double Pan_Speed, double Tilt_Speed){
+void mote::walking::Robot::setHead(double pan, double tilt, double panSpeed, double tiltSpeed)
+{
+	// Head_Pan_Angle = Pan;
+	// Head_Tilt_Angle = Tilt;
+	this->humanoid.head.position.pan = pan;
+	this->humanoid.head.position.tilt = tilt;
+
+	//check for head limitation
+
+	// if(Head_Pan_Angle >  (Pi/2.0)) Head_Pan_Angle =  (Pi/2.0);
+	// if(Head_Pan_Angle < -(Pi/2.0)) Head_Pan_Angle = -(Pi/2.0);
+
+	// TODO: Put the head limits as configuration.
+	if (this->humanoid.head.position.pan > M_PI_2)
+		this->humanoid.head.position.pan = M_PI_2;
+	if (this->humanoid.head.position.pan < -M_PI_2)
+		this->humanoid.head.position.pan = -M_PI_2;
+
+	//check for head tilt limitation
+	// if(Head_Tilt_Angle >  ((Pi/2.0)-0.1)) Head_Tilt_Angle =  (Pi/2.0)-0.1;
+	// if(Head_Tilt_Angle < -(Pi/3.0)) Head_Tilt_Angle = -(Pi/3.0);
+	if (this->humanoid.head.position.tilt > (M_PI_2 - 0.1))
+		this->humanoid.head.position.tilt = (M_PI_2 - 0.1);
+	if (this->humanoid.head.position.tilt < -(M_PI / 3.0))
+		this->humanoid.head.position.tilt = -M_PI / 3.0;
+
+	this->humanoid.head.velocity.pan = panSpeed;
+	this->humanoid.head.velocity.tilt = tiltSpeed;
 }

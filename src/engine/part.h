@@ -48,6 +48,8 @@ class Head
 	: public Part
 {
 public:
+	data::HeadData position;
+	data::HeadData velocity;
 	virtual void zero() override;
 };
 
@@ -57,6 +59,8 @@ class Hip
 public:
 	data::Angle3d angle;
 	data::Angle3d velocity;
+
+	virtual void zero() override;
 };
 
 class Knee
@@ -65,6 +69,8 @@ class Knee
 public:
 	double velocity;
 	double angle;
+
+	virtual void zero() override;
 };
 
 class Foot
@@ -73,6 +79,8 @@ class Foot
 public:
 	data::Angle2d angle;
 	data::Angle2d velocity;
+
+	virtual void zero() override;
 };
 
 class Humanoid:
@@ -90,6 +98,8 @@ public:
 	Knee leftKnee;
 	Foot rightFoot;
 	Foot leftFoot;
+
+	virtual void zero() override;
 };
 
 }

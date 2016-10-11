@@ -37,8 +37,8 @@ class WalkEngine
 public:
 	double motionResolution;
 	double gaitFrequency;
-	double doubleSupportSleep;
-	double singleSupportSleep;
+	unsigned int doubleSupportSleep;
+	unsigned int singleSupportSleep;
 
 	Angle3d flyGain;
 	Vector3d flySwingGain;
@@ -98,7 +98,7 @@ public:
 
 	double legLength;
 
-	Vector3d velocity; // = Vector3d(-0.07, 0.0, 0.001);
+	Vector2td velocityOffset; // = Vector3d(-0.07, 0.0, 0.001);
 
 	WalkEngine walkEngine;
 

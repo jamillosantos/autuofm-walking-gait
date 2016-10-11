@@ -33,7 +33,7 @@ public:
 
 	virtual void set(T value)
 	{
-		this->pitch this->roll = value;
+		this->pitch = this->roll = value;
 	}
 
 	virtual void zero()
@@ -81,6 +81,16 @@ typedef Angle2<double> Angle2d;
 
 typedef Angle3<float> Angle3f;
 typedef Angle3<double> Angle3d;
+
+class HeadData
+{
+public:
+	double pan;
+	double tilt;
+
+	HeadData();
+	HeadData(double pan, double tilt);
+};
 }
 }
 }

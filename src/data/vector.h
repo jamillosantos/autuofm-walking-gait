@@ -31,6 +31,11 @@ public:
 	Vector2(Vector2& vector)
 		: x(vector.x), y(vector.y)
 	{ }
+
+	virtual void zero()
+	{
+		this->x = this->y = 0;
+	}
 };
 
 template<typename T>
@@ -56,14 +61,51 @@ public:
 		: Vector2<T>(vector), z(0)
 	{ }
 
-	void zero()
+	virtual void zero() override
 	{
 		this->x = this->y = this->z = 0;
 	}
 };
 
+template <typename T>
+class Vector2t:
+	public Vector2<T>
+{
+public:
+	T theta;
+
+	Vector2t()
+		: Vector2<T>()
+	{ }
+
+	Vector2t(T x, T y)
+		: Vector2<T>(x, y)
+	{ }
+	Vector2t(T x, T y, T theta)
+		: Vector2<T>(x, y), theta(theta)
+	{ }
+
+	Vector2t(Vector2<T> &vector)
+		: Vector2<T>(vector)
+	{ }
+
+	Vector2t(Vector2t<T> &vector)
+		: Vector2<T>(vector)
+	{
+		this->theta = vector.theta;
+	}
+
+	virtual void zero() override
+	{
+		Vector2<T>::zero();
+		this->theta = 0;
+	}
+};
+
 typedef Vector2<float> Vector2f;
 typedef Vector2<double> Vector2d;
+
+typedef Vector2t<double> Vector2td;
 
 typedef Vector3<float> Vector3f;
 typedef Vector3<double> Vector3d;

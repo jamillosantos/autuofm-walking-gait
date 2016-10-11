@@ -16,6 +16,12 @@
 #include "../consts.h"
 #include "ik.h"
 
+#define No_Motion                    0x64
+#define Stop_Motion                  0x70
+
+//internal motion number value
+#define Stand_Up_Front               1
+#define Stand_Up_Back                2
 namespace mote
 {
 namespace walking
@@ -55,9 +61,9 @@ enum class RobotState
 class Robot
 {
 private:
-	data::Vector3d _velocity;
-	float _velocityTheta;
+	data::Vector2td _velocity;
 	Configuration &configuration;
+	Humanoid humanoid;
 	HumanoidIK ik;
 	sensors::IMU imu;
 protected:
@@ -74,6 +80,26 @@ public:
 	void omniGait(double vx, double vy, double vt);
 
 	void checkRobotState();
+
+	/**
+	 * Updates internal head value.
+	 *
+	 * @param pan
+	 * @param tilt
+	 * @param panSpeed
+	 * @param tiltSpeed
+	 */
+	void setHead(double pan, double tilt, double panSpeed, double tiltSpeed);
+
+	int Check_Robot_Fall;
+	/**
+	 * The motion request
+	 */
+	int Motion_Ins;
+
+	int System_Voltage;
+	int Internal_Motion_Request;
+	int Actuators_Update;
 };
 }
 }
