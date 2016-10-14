@@ -102,7 +102,7 @@ if (NOT EXISTS ${JSONCPP_DIR})
 			file(MAKE_DIRECTORY "${JSONCPP_DIR}/install")
 			file(MAKE_DIRECTORY "${JSONCPP_DIR}/install/debug")
 			execute_process(
-				COMMAND cmake -DCMAKE_INSTALL_PREFIX=../../install/debug -DBUILD_SHARED_LIBS=ON -config Debug ../..
+				COMMAND cmake -DBUILD_STATIC_LIBS=OFF -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=../../install/debug -config Debug ../..
 				WORKING_DIRECTORY "${JSONCPP_DIR}/build/debug"
 				OUTPUT_VARIABLE CMAKE_OUTPUT
 				RESULT_VARIABLE CMAKE_RESULT
@@ -264,7 +264,7 @@ endif()
 message("")
 
 set(Walking_LIBRARIES
-	jsoncpp
+	${jsoncpp}
 	pthread
 	${Boost_LIBRARIES}
 )
@@ -288,7 +288,7 @@ set(SOURCE_FILES
 	src/engine/ik.h
 
 	src/configuration/configuration.cpp
-	src/configuration/configuration.h
+	src/configuration/configuration_test.h
 
 	src/data/angle.cpp
 	src/data/angle.h
@@ -320,11 +320,10 @@ if (${ENABLE_TEST})
 	add_executable(
 		run_tests
 
-		# test/src/resources.h
-		# test/src/resources.cpp
-
 		${TEST_SRCS}
 		${SOURCE_FILES}
+		test/resources.cpp
+		test/resources.h
 	)
 	set_target_properties(run_tests PROPERTIES
 		RUNTIME_OUTPUT_DIRECTORY ${TEST_OUTPUT}
