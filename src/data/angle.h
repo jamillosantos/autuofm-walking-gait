@@ -6,6 +6,8 @@
 #ifndef WALKING_DATA_ANGLE_H
 #define WALKING_DATA_ANGLE_H
 
+#include <json/json.h>
+
 namespace mote
 {
 namespace walking
@@ -41,6 +43,17 @@ public:
 		this->pitch = 0;
 		this->roll = 0;
 	}
+
+	virtual void fromJson(const Json::Value &json)
+	{
+		for (Json::ValueConstIterator it = json.begin(); it != json.end(); ++it)
+		{
+			if (it.name() == "pitch")
+				this->pitch = it->asDouble();
+			else if (it.name() == "roll")
+				this->roll = it->asDouble();
+		}
+	}
 };
 
 template<typename T>
@@ -73,6 +86,14 @@ public:
 	virtual void zero() override
 	{
 		this->pitch = this->roll = this->yaw = 0;
+	}
+
+	virtual void fromJson(const Json::Value &json) override
+	{
+		Angle2<T>::fromJson(json);
+		const Json::Value &jsonYaw = json["yaw"];
+		if (!jsonYaw.isNull())
+			this->yaw = jsonYaw.asDouble();
 	}
 };
 

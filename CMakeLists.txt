@@ -270,8 +270,6 @@ set(Walking_LIBRARIES
 )
 
 set(SOURCE_FILES
-	src/main.cpp
-
 	src/data/servo.cpp
 	src/data/servo.h
 
@@ -288,7 +286,7 @@ set(SOURCE_FILES
 	src/engine/ik.h
 
 	src/configuration/configuration.cpp
-	src/configuration/configuration_test.h
+	src/configuration/configuration.h
 
 	src/data/angle.cpp
 	src/data/angle.h
@@ -306,7 +304,11 @@ set(SOURCE_FILES
 	src/motors/servo.h
 	src/consts.h
 )
-add_executable(walking ${SOURCE_FILES})
+add_executable(walking
+	src/main.cpp
+
+	${SOURCE_FILES}
+)
 target_link_libraries(walking
 	${Walking_LIBRARIES}
 )
@@ -314,8 +316,8 @@ target_link_libraries(walking
 if (${ENABLE_TEST})
 	message("Tests")
 	enable_testing()
-	include_directories(${CMAKE_SOURCE_DIR}/src)
-	file(GLOB_RECURSE TEST_SRCS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} test/src/*_test.cpp)
+	include_directories(${CMAKE_SOURCE_DIR})
+	file(GLOB_RECURSE TEST_SRCS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} test/*_test.cpp)
 
 	add_executable(
 		run_tests
@@ -334,7 +336,7 @@ if (${ENABLE_TEST})
 		)
 	foreach (testSrc ${TEST_SRCS})
 		# get_filename_component(testName ${testSrc} NAME_WE)
-		string(REPLACE "test/src/" "" testPackage "${testSrc}")
+		string(REPLACE "test/" "" testPackage "${testSrc}")
 		string(REPLACE "_test.cpp" "" testPackage "${testPackage}")
 		string(REPLACE "/" "_" testPackage "${testPackage}")
 		message("-- ${testPackage}: ${testSrc}")

@@ -49,7 +49,7 @@ void mote::walking::Foot::zero()
 	this->velocity.zero();
 }
 
-void mote::walking::Humanoid::zero()
+void mote::walking::HumanoidPart::zero()
 {
 	this->head.zero();
 	this->rightArm.zero();

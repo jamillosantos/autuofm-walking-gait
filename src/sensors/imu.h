@@ -18,10 +18,10 @@ namespace sensors
 class IMU
 {
 public:
-	MPU &mpu;
-	Gyro &gyro;
+	MPU mpu;
+	Gyro gyro;
 
-	IMU(MPU &mpu, Gyro &gyro);
+	IMU();
 };
 }
 }

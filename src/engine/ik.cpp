@@ -6,7 +6,7 @@
 #include <algorithm>
 #include "ik.h"
 
-mote::walking::HumanoidIK::HumanoidIK(mote::walking::Humanoid &humanoid, mote::walking::Configuration &configuration,
+mote::walking::HumanoidIK::HumanoidIK(mote::walking::HumanoidPart &humanoid, mote::walking::Configuration &configuration,
 	sensors::IMU &imu)
 	: humanoid(humanoid), configuration(configuration), imu(imu)
 { }

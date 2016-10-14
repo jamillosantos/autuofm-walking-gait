@@ -6,6 +6,8 @@
 #ifndef WALKING_DATA_VECTOR_H
 #define WALKING_DATA_VECTOR_H
 
+#include <json/json.h>
+
 namespace mote
 {
 namespace walking
@@ -36,6 +38,16 @@ public:
 	{
 		this->x = this->y = 0;
 	}
+
+	virtual void fromJson(const Json::Value &json)
+	{
+		const Json::Value &xJson = json["x"];
+		const Json::Value &yJson = json["y"];
+		if (!xJson.isNull())
+			this->x = xJson.asDouble();
+		if (!yJson.isNull())
+			this->y = yJson.asDouble();
+	}
 };
 
 template<typename T>
@@ -64,6 +76,13 @@ public:
 	virtual void zero() override
 	{
 		this->x = this->y = this->z = 0;
+	}
+
+	virtual void fromJson(const Json::Value &json) override
+	{
+		Vector2<T>::fromJson(json);
+		const Json::Value &zJson = json["z"];
+		this->z = zJson.asDouble();
 	}
 };
 
@@ -99,6 +118,13 @@ public:
 	{
 		Vector2<T>::zero();
 		this->theta = 0;
+	}
+
+	virtual void fromJson(const Json::Value &json) override
+	{
+		Vector2<T>::fromJson(json);
+		const Json::Value &thetaJson = json["theta"];
+		this->theta = thetaJson.asDouble();
 	}
 };
 

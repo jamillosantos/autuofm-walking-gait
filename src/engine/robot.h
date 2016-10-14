@@ -12,9 +12,9 @@
 
 #include "../data/vector.h"
 #include "../data/servo.h"
-#include "../configuration/configuration.h"
 #include "../consts.h"
 #include "ik.h"
+#include "../configuration/configuration.h"
 
 #define No_Motion                    0x64
 #define Stop_Motion                  0x70
@@ -61,17 +61,27 @@ enum class RobotState
 class Robot
 {
 private:
+	std::unique_ptr<std::thread> _thread;
+
 	data::Vector2td _velocity;
 	Configuration &configuration;
-	Humanoid humanoid;
+	HumanoidPart humanoid;
 	HumanoidIK ik;
-	sensors::IMU imu;
+	sensors::IMU& imu;
+
+
+	int Check_Robot_Fall;
+
+	/**
+	 * The motion request
+	 */
+	int Motion_Ins;
+
+	int System_Voltage;
+	int Internal_Motion_Request;
+	int Actuators_Update;
 protected:
 	RobotState getRobotState(double roll, double pitch);
-public:
-	void run();
-
-	void init();
 
 	void standInit(double speed);
 
@@ -91,15 +101,13 @@ public:
 	 */
 	void setHead(double pan, double tilt, double panSpeed, double tiltSpeed);
 
-	int Check_Robot_Fall;
-	/**
-	 * The motion request
-	 */
-	int Motion_Ins;
+	void init();
 
-	int System_Voltage;
-	int Internal_Motion_Request;
-	int Actuators_Update;
+	void run();
+public:
+	Robot(Configuration &configuration, sensors::IMU &imu);
+
+	void start();
 };
 }
 }

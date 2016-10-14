@@ -83,7 +83,7 @@ public:
 	virtual void zero() override;
 };
 
-class Humanoid:
+class HumanoidPart:
 	public Part
 {
 public:

@@ -318,7 +318,7 @@ void mote::walking::Robot::omniGait(double vx, double vy, double vt)
 	 * gait generate with for loop form 0 ~ 2 * 3.14
 	 */
 	// for (double t = 0; t <= TwoPi ; t += WEP[P_Motion_Resolution])
-	for (double t = 0; t <= M_2xPIl; t += this->configuration.walking.walkEngine.motionResolution)
+	for (double t = 0; t <= M_2xPIl; t += this->configuration.walking.engine.motionResolution)
 	{
 		if (vx > 0.3)
 			vx = 0.3;
@@ -339,40 +339,40 @@ void mote::walking::Robot::omniGait(double vx, double vy, double vt)
 		if (
 			(
 				// (t >= Pi-WEP[P_Motion_Resolution])
-				(t >= (M_PIl - this->configuration.walking.walkEngine.motionResolution))
+				(t >= (M_PIl - this->configuration.walking.engine.motionResolution))
 				// && (t <= Pi+WEP[P_Motion_Resolution])
-				&& (t <= (M_PIl + this->configuration.walking.walkEngine.motionResolution))
+				&& (t <= (M_PIl + this->configuration.walking.engine.motionResolution))
 			)
 			|| (
 				//(t >= TwoPi-WEP[P_Motion_Resolution])
-				(t >= (M_2xPIl - this->configuration.walking.walkEngine.motionResolution))
+				(t >= (M_2xPIl - this->configuration.walking.engine.motionResolution))
 				// &&(t <= TwoPi+WEP[P_Motion_Resolution])
-				&& (t <= M_2xPIl + this->configuration.walking.walkEngine.motionResolution)
+				&& (t <= M_2xPIl + this->configuration.walking.engine.motionResolution)
 			)
 			|| (t == 0.0)
 		)
 		{
 			// vTaskDelay(WEP[P_Double_Support_Sleep]);
-			std::this_thread::sleep_for(std::chrono::milliseconds(this->configuration.walking.walkEngine.doubleSupportSleep));
+			std::this_thread::sleep_for(std::chrono::milliseconds(this->configuration.walking.engine.doubleSupportSleep));
 		}
 
 		if (
 			(
 				// (t >= (Pi/2.0) - WEP[P_Motion_Resolution])
-				(t >= (M_PI_2l - this->configuration.walking.walkEngine.motionResolution))
+				(t >= (M_PI_2l - this->configuration.walking.engine.motionResolution))
 				// && (t <= (Pi/2.0)+WEP[P_Motion_Resolution])
-				&& (t <= (M_PI_2l + this->configuration.walking.walkEngine.motionResolution))
+				&& (t <= (M_PI_2l + this->configuration.walking.engine.motionResolution))
 			)
 			|| (
 				// (t >= ((3.0*Pi)/2.0)-WEP[P_Motion_Resolution])
-				(t >= (M_32_PIl - this->configuration.walking.walkEngine.motionResolution))
+				(t >= (M_32_PIl - this->configuration.walking.engine.motionResolution))
 				// && (t <= ((3.0*Pi)/2.0)+WEP[P_Motion_Resolution])
-				&& (t <= (M_32_PIl + this->configuration.walking.walkEngine.motionResolution))
+				&& (t <= (M_32_PIl + this->configuration.walking.engine.motionResolution))
 			)
 		)
 		{
 			// vTaskDelay(WEP[P_Single_Support_Sleep]);
-			std::this_thread::sleep_for(std::chrono::milliseconds(this->configuration.walking.walkEngine.singleSupportSleep));
+			std::this_thread::sleep_for(std::chrono::milliseconds(this->configuration.walking.engine.singleSupportSleep));
 		}
 
 		/**
@@ -400,31 +400,31 @@ void mote::walking::Robot::omniGait(double vx, double vy, double vt)
 		// R_Leg_Ik[I_X]     = (-(cos(t)*(vx*100.0)))+ (vx * WEP[P_Body_X_Swing_Gain] * S_X * 100.0);
 		rightLeg.position.x =
 			(-(std::cos(t) * (vx * 100.0)))
-			+ (vx * this->configuration.walking.walkEngine.bodySwingGain.x * S_X * 100.0);
+			+ (vx * this->configuration.walking.engine.bodySwingGain.x * S_X * 100.0);
 		// R_Leg_Ik[I_Y]     = (t<=Pi) ? (sin(t)*(WEP[P_Body_Y_Swing_Gain]*100.0)) + (sin(t)*(WEP[P_Fly_Y_Swing_Gain]*100.0)) + (cos(t-Pi)*(vy*50.0))
 		// 							: (sin(t)*(WEP[P_Body_Y_Swing_Gain]*100.0))+(cos(t-Pi)*(vy*50.0))+(sin(t)*WEP[P_Support_Y_Swing_Gain]);
 		rightLeg.position.y =
 			(t <= M_PIl)
-				? (std::sin(t) * (this->configuration.walking.walkEngine.bodySwingGain.y * 100.0))
-				  + (std::sin(t) * (this->configuration.walking.walkEngine.flySwingGain.y * 100.0))
+				? (std::sin(t) * (this->configuration.walking.engine.bodySwingGain.y * 100.0))
+				  + (std::sin(t) * (this->configuration.walking.engine.flySwingGain.y * 100.0))
 				  + (std::cos(t - M_PIl) * (vy * 50.0))
-				: (std::sin(t) * (this->configuration.walking.walkEngine.bodySwingGain.y * 100.0))
-				  + (std::cos(t - M_PIl) * (vy * 50.0)) + (std::sin(t) * this->configuration.walking.walkEngine.supportSwingGain.y);
+				: (std::sin(t) * (this->configuration.walking.engine.bodySwingGain.y * 100.0))
+				  + (std::cos(t - M_PIl) * (vy * 50.0)) + (std::sin(t) * this->configuration.walking.engine.supportSwingGain.y);
 		// R_Leg_Ik[I_Z]     = (t<=Pi) ? (sin(t)*(WEP[P_Fly_Z_Swing_Gain]*100.0)) : (sin(t)*(WEP[P_Support_Z_Swing_Gain]*100.0));
 		rightLeg.position.z =
 			(t <= M_PIl)
-			? (std::sin(t) * (this->configuration.walking.walkEngine.flySwingGain.z * 100.0))
-			: (std::sin(t) * (this->configuration.walking.walkEngine.supportSwingGain.z * 100.0));
+			? (std::sin(t) * (this->configuration.walking.engine.flySwingGain.z * 100.0))
+			: (std::sin(t) * (this->configuration.walking.engine.supportSwingGain.z * 100.0));
 		// R_Leg_Ik[I_Roll]  = (t<=Pi) ? (-sin(t)*(WEP[P_Fly_Roll_Gain])) : (-sin(t)*(WEP[P_Support_Roll_Gain]));
 		rightLeg.angle.roll =
 			(t <= M_PIl)
-			? (-std::sin(t) * this->configuration.walking.walkEngine.flyGain.roll)
-			: (-std::sin(t) * this->configuration.walking.walkEngine.supportGain.roll);
+			? (-std::sin(t) * this->configuration.walking.engine.flyGain.roll)
+			: (-std::sin(t) * this->configuration.walking.engine.supportGain.roll);
 		// R_Leg_Ik[I_Pitch] = (t<=Pi) ? 0.0 : (sin(t)*WEP[P_Support_Pitch_Gain]);
 		rightLeg.angle.pitch =
 			(t <= M_PIl)
 			? 0.0
-			: (std::sin(t) * this->configuration.walking.walkEngine.supportGain.pitch);
+			: (std::sin(t) * this->configuration.walking.engine.supportGain.pitch);
 		// R_Leg_Ik[I_Yaw]   = (cos(t-Pi)*(vt));
 		rightLeg.angle.yaw = (std::cos(t - M_PIl) * (vt));
 
@@ -434,32 +434,32 @@ void mote::walking::Robot::omniGait(double vx, double vy, double vt)
 		// L_Leg_Ik[I_X]     = (-(cos(t-Pi)*(vx*100.0)))+ (vx * WEP[P_Body_X_Swing_Gain] * S_X * 100.0);
 		leftLeg.position.x =
 			(-(std::cos(t - M_PIl) * (vx * 100.0)))
-			+ (vx * this->configuration.walking.walkEngine.bodySwingGain.x * S_X * 100.0);
+			+ (vx * this->configuration.walking.engine.bodySwingGain.x * S_X * 100.0);
 		// L_Leg_Ik[I_Y]     = (t>=Pi) ? (-sin(t)*(WEP[P_Body_Y_Swing_Gain]*100.0)) + (-sin(t)*(WEP[P_Fly_Y_Swing_Gain]*100.0)) +(cos(t-Pi)*(vy*50.0))
 		// 							: (-sin(t)*(WEP[P_Body_Y_Swing_Gain]*100.0))+(cos(t-Pi)*(vy*50.0))+(sin(t)*WEP[P_Support_Y_Swing_Gain]);
 		leftLeg.position.y =
 			(t >= M_PIl)
-			? (-std::sin(t) * (this->configuration.walking.walkEngine.bodySwingGain.y * 100.0))
-			  + (-std::sin(t) * (this->configuration.walking.walkEngine.flySwingGain.y * 100.0))
+			? (-std::sin(t) * (this->configuration.walking.engine.bodySwingGain.y * 100.0))
+			  + (-std::sin(t) * (this->configuration.walking.engine.flySwingGain.y * 100.0))
 			  + (std::cos(t - M_PIl) * (vy * 50.0))
-			: (-std::sin(t) * (this->configuration.walking.walkEngine.bodySwingGain.y * 100.0))
+			: (-std::sin(t) * (this->configuration.walking.engine.bodySwingGain.y * 100.0))
 			  + (std::cos(t - M_PIl) * (vy * 50.0))
-			  + (std::sin(t) * this->configuration.walking.walkEngine.supportSwingGain.y);
+			  + (std::sin(t) * this->configuration.walking.engine.supportSwingGain.y);
 		// L_Leg_Ik[I_Z]     = (t>=Pi) ? ((sin(t-Pi))*(WEP[P_Fly_Z_Swing_Gain]*100.0)) : ((sin(t-Pi))*(WEP[P_Support_Z_Swing_Gain]*100.0));
 		leftLeg.position.z =
 			(t >= M_PIl)
-			? ((std::sin(t - M_PIl)) * (this->configuration.walking.walkEngine.flySwingGain.z * 100.0))
-			: ((std::sin(t - M_PIl)) * (this->configuration.walking.walkEngine.supportSwingGain.z * 100.0));
+			? ((std::sin(t - M_PIl)) * (this->configuration.walking.engine.flySwingGain.z * 100.0))
+			: ((std::sin(t - M_PIl)) * (this->configuration.walking.engine.supportSwingGain.z * 100.0));
 		// L_Leg_Ik[I_Roll]  = (t>=Pi) ? (sin(t)*(WEP[P_Fly_Roll_Gain])) : (sin(t)*(WEP[P_Support_Roll_Gain]));
 		leftLeg.angle.roll =
 			(t >= M_PIl)
-			? (std::sin(t) * (this->configuration.walking.walkEngine.flyGain.roll))
-			: (std::sin(t) * (this->configuration.walking.walkEngine.supportGain.roll));
+			? (std::sin(t) * (this->configuration.walking.engine.flyGain.roll))
+			: (std::sin(t) * (this->configuration.walking.engine.supportGain.roll));
 		// L_Leg_Ik[I_Pitch] = (t>=Pi) ? 0.0 : (sin(t-Pi)*WEP[P_Support_Pitch_Gain]);
 		leftLeg.angle.pitch =
 			(t >= M_PIl)
 			? 0.0
-			: (std::sin(t - M_PIl) * this->configuration.walking.walkEngine.supportGain.pitch);
+			: (std::sin(t - M_PIl) * this->configuration.walking.engine.supportGain.pitch);
 		// L_Leg_Ik[I_Yaw]   = (cos(t-Pi)*(vt)); //(cos(t-Pi)*(vt));
 		leftLeg.angle.yaw = (std::cos(t - M_PIl) * (vt));
 
@@ -496,7 +496,7 @@ void mote::walking::Robot::omniGait(double vx, double vy, double vt)
 		this->ik.update(Joint_Speed, Joint_Speed, rightLeg, leftLeg, rightArm, leftArm);
 		// vTaskDelay(WEP[P_Gait_Frequency]*100);
 		std::this_thread::sleep_for(std::chrono::milliseconds(
-			(unsigned int) std::round(this->configuration.walking.walkEngine.gaitFrequency * 100))
+			(unsigned int) std::round(this->configuration.walking.engine.gaitFrequency * 100))
 		);
 	}//main gait timi for ins
 }
@@ -622,4 +622,14 @@ void mote::walking::Robot::setHead(double pan, double tilt, double panSpeed, dou
 
 	this->humanoid.head.velocity.pan = panSpeed;
 	this->humanoid.head.velocity.tilt = tiltSpeed;
+}
+
+mote::walking::Robot::Robot(mote::walking::Configuration &configuration, mote::walking::sensors::IMU &imu)
+	: configuration(configuration), imu(imu), ik(humanoid, configuration, imu)
+{ }
+
+void mote::walking::Robot::start()
+{
+	if (!this->_thread)
+		this->_thread.reset(new std::thread(&mote::walking::Robot::run, this));
 }
