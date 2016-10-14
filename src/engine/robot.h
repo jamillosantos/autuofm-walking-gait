@@ -3,9 +3,10 @@
  * @date September 20, 2016
  */
 
-#ifndef WALKING_ROBOT_H
-#define WALKING_ROBOT_H
+#ifndef WALKING_ENGINE_ROBOT_H
+#define WALKING_ENGINE_ROBOT_H
 
+#include <iostream>
 #include <chrono>
 #include <thread>
 #include <cmath>
@@ -103,14 +104,15 @@ protected:
 
 	void init();
 
-	void run();
 public:
 	Robot(Configuration &configuration, sensors::IMU &imu);
 
 	void start();
+
+	void run();
 };
 }
 }
 
 
-#endif //WALKING_ROBOT_H
+#endif //WALKING_ENGINE_ROBOT_H

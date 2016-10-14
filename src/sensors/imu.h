@@ -3,8 +3,8 @@
  * @date September 27, 2016
  */
 
-#ifndef WALKING_IMU_H
-#define WALKING_IMU_H
+#ifndef WALKING_SENSORS_IMU_H
+#define WALKING_SENSORS_IMU_H
 
 #include "mpu.h"
 #include "gyro.h"
@@ -27,4 +27,4 @@ public:
 }
 }
 
-#endif //WALKING_IMU_H
+#endif //WALKING_SENSORS_IMU_H

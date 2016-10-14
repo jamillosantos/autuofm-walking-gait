@@ -17,10 +17,16 @@ void mote::walking::Configuration::loadFromFile(const std::string filePath)
 				Json::Value json;
 				Json::Reader reader;
 				reader.parse(jsonStream, json, false);
-				Json::Value &walking = json["walking"];
-				if (!walking.isNull())
+				for (Json::ValueConstIterator it = json.begin(); it != json.end(); ++it)
 				{
-					this->walking.fromJson(walking);
+					if (it.name() == "robot")
+						this->robot = it->asString();
+					else if (it.name() == "walking")
+						this->walking.fromJson(*it);
+					else
+					{
+						// TODO: Throw an exception!
+					}
 				}
 			}
 			else

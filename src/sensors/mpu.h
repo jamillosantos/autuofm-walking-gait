@@ -3,8 +3,8 @@
  * @date September 28, 2016
  */
 
-#ifndef WALKING_MPU_H
-#define WALKING_MPU_H
+#ifndef WALKING_SENSORS_MPU_H
+#define WALKING_SENSORS_MPU_H
 
 #include "../data/vector.h"
 
@@ -24,4 +24,4 @@ public:
 }
 
 
-#endif //WALKING_MPU_H
+#endif //WALKING_SENSORS_MPU_H

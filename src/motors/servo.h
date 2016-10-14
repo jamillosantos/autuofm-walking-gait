@@ -3,8 +3,8 @@
  * @date September 28, 2016
  */
 
-#ifndef WALKING_MOTOR_H
-#define WALKING_MOTOR_H
+#ifndef WALKING_MOTORS_MOTOR_H
+#define WALKING_MOTORS_MOTOR_H
 
 namespace mote
 {
@@ -23,4 +23,4 @@ public:
 }
 
 
-#endif //WALKING_MOTOR_H
+#endif //WALKING_MOTORS_MOTOR_H

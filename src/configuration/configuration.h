@@ -164,6 +164,7 @@ public:
 class Configuration
 {
 public:
+	std::string robot;
 	configuration::Walking walking;
 
 	void loadFromFile(const std::string filePath);

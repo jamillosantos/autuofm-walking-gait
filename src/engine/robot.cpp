@@ -11,15 +11,20 @@ void mote::walking::Robot::run()
 	this->_velocity.zero();
 	// Buzzer(200);
 
+	VERBOSE("Stand init 1!");
 	this->standInitT(0.05, 1);
 	std::this_thread::sleep_for(std::chrono::seconds(1));
 	//stand for first time
+	VERBOSE("Stand init 2!");
 	this->standInitT(0.05, 300);
 
 	this->Check_Robot_Fall = 1; // Check_Robot_Fall==1;??
+
+	VERBOSE("Starting main loop!");
 	//main task loop
 	for( ;; )
 	{
+		VERBOSE("Tick!");
 		// togglePin(RED_LED_485EXP);
 
 		if ((
@@ -197,6 +202,7 @@ void mote::walking::Robot::run()
 
 void mote::walking::Robot::init()
 {
+	VERBOSE("Initialization started!");
 	this->standInit(0.1);  //ititialie robot to stand position
 
 	this->_velocity.zero();
@@ -204,6 +210,7 @@ void mote::walking::Robot::init()
 
 	Motion_Ins = No_Motion;
 	Internal_Motion_Request = No_Motion;
+	VERBOSE("ok!");
 }
 
 void mote::walking::Robot::standInit(double speed)
@@ -299,7 +306,9 @@ void mote::walking::Robot::standInitT(double speed, int time)
 		this->ik.update(speed, speed, R_Leg_Ik, L_Leg_Ik, R_Arm, L_Arm);
 		std::this_thread::sleep_for(std::chrono::milliseconds(20));
 		//vTaskDelay(20);
+		std::cerr << ".";
 	}
+	std::cerr << std::endl;
 }
 
 //omni directional gaite generation

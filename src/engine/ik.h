@@ -3,8 +3,8 @@
  * @date September 23, 2016
  */
 
-#ifndef WALKING_IK_H
-#define WALKING_IK_H
+#ifndef WALKING_ENGINE_IK_H
+#define WALKING_ENGINE_IK_H
 
 #include "part.h"
 #include "../configuration/configuration.h"
@@ -29,4 +29,4 @@ public:
 }
 
 
-#endif //WALKING_IK_H
+#endif //WALKING_ENGINE_IK_H

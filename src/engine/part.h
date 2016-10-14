@@ -3,8 +3,8 @@
  * @date September 23, 2016
  */
 
-#ifndef WALKING_PART_H
-#define WALKING_PART_H
+#ifndef WALKING_ENGINE_PART_H
+#define WALKING_ENGINE_PART_H
 
 #include <exception>
 #include "../data/vector.h"
@@ -105,4 +105,4 @@ public:
 }
 }
 
-#endif //WALKING_PART_H
+#endif //WALKING_ENGINE_PART_H

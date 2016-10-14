@@ -3,8 +3,8 @@
  * @date September 27, 2016
  */
 
-#ifndef WALKING_GYRO_H
-#define WALKING_GYRO_H
+#ifndef WALKING_SENSORS_GYRO_H
+#define WALKING_SENSORS_GYRO_H
 
 #include "../data/angle.h"
 #include "../data/vector.h"
@@ -25,4 +25,4 @@ public:
 }
 
 
-#endif //WALKING_GYRO_H
+#endif //WALKING_SENSORS_GYRO_H

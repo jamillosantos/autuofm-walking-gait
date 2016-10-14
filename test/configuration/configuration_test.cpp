@@ -14,6 +14,8 @@ GTEST_TEST(configuration_configuration, loadFromFile)
 	mote::walking::Configuration configuration;
 	configuration.loadFromFile((Resources::resources() / "config.json").string());
 
+	ASSERT_EQ("Arash", configuration.robot);
+
 	ASSERT_EQ(1000, configuration.walking.head.panSpeed);
 	ASSERT_EQ(1000, configuration.walking.head.tiltSpeed);
 

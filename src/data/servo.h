@@ -3,8 +3,8 @@
  * @date September 20, 2016
  */
 
-#ifndef WALKING_SERVO_H
-#define WALKING_SERVO_H
+#ifndef WALKING_DATA_SERVO_H
+#define WALKING_DATA_SERVO_H
 
 namespace mote
 {
