@@ -29,7 +29,7 @@ set(BOOST_VERSION "1.62.0"
 string(REPLACE "."
 	"_" BOOST_VERSION_UNDERSCORE
 	${BOOST_VERSION})
-set(BOOST_DIR "${THIRD_PARTY_LIBRARIES}/boost_${BOOST_VERSION_UNDERSCORE}"
+set(BOOST_DIR "$ENV{HOME}/libs/boost_${BOOST_VERSION_UNDERSCORE}"
 	CACHE STRING "Boost destiny folder")
 set(BOOST_DOWNLOAD_MD5 "5fb94629535c19e48703bdb2b2e9490f"
 	CACHE STRING "Boost library download MD5 hash for integrity verification")
@@ -304,6 +304,7 @@ set(SOURCE_FILES
 
 	src/motors/servo.cpp
 	src/motors/servo.h
+
 	src/consts.h
 )
 add_executable(walking
