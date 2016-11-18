@@ -100,6 +100,8 @@ public:
 	Foot leftFoot;
 
 	virtual void zero() override;
+
+	void dump();
 };
 
 }

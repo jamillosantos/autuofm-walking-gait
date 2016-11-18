@@ -137,7 +137,7 @@ void mote::walking::Robot::run()
 					break;
 			}
 
-			// TODO: Add support for recording motions.
+			// TODO: Add support for recorded motions.
 			/*
 			//run the motion
 			switch(Motion_Ins)
@@ -197,6 +197,7 @@ void mote::walking::Robot::run()
 			}//external motion request switch
 			*/
 		}//main if/else
+		// this->humanoid.dump();
 	}
 }
 
