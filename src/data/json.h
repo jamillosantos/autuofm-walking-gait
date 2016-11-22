@@ -15,7 +15,9 @@ class json
 public:
 	static void serialize(const Json::Value &json, std::string &msg);
 
-	static bool unserialize(char buffer[4096], unsigned int len, Json::Value &value);
+	static bool unserialize(char *buffer, unsigned int len, Json::Value &value);
+
+	static bool unserialize(const std::string &json, Json::Value &value);
 };
 }
 

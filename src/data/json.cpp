@@ -16,3 +16,9 @@ bool mote::json::unserialize(char *buffer, unsigned int len, Json::Value &value)
 	Json::Reader reader;
 	return reader.parse(buffer, &buffer[len], value, false);
 }
+
+bool mote::json::unserialize(const std::string &json, Json::Value &value)
+{
+	Json::Reader reader;
+	return reader.parse(json, value, false);
+}
