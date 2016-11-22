@@ -608,8 +608,8 @@ void mote::walking::Robot::setHead(double pan, double tilt, double panSpeed, dou
 {
 	// Head_Pan_Angle = Pan;
 	// Head_Tilt_Angle = Tilt;
-	this->humanoid.head.position.pan = pan;
-	this->humanoid.head.position.tilt = tilt;
+	this->_humanoid.head.position.pan = pan;
+	this->_humanoid.head.position.tilt = tilt;
 
 	//check for head limitation
 
@@ -617,25 +617,25 @@ void mote::walking::Robot::setHead(double pan, double tilt, double panSpeed, dou
 	// if(Head_Pan_Angle < -(Pi/2.0)) Head_Pan_Angle = -(Pi/2.0);
 
 	// TODO: Put the head limits as configuration.
-	if (this->humanoid.head.position.pan > M_PI_2)
-		this->humanoid.head.position.pan = M_PI_2;
-	if (this->humanoid.head.position.pan < -M_PI_2)
-		this->humanoid.head.position.pan = -M_PI_2;
+	if (this->_humanoid.head.position.pan > M_PI_2)
+		this->_humanoid.head.position.pan = M_PI_2;
+	if (this->_humanoid.head.position.pan < -M_PI_2)
+		this->_humanoid.head.position.pan = -M_PI_2;
 
 	//check for head tilt limitation
 	// if(Head_Tilt_Angle >  ((Pi/2.0)-0.1)) Head_Tilt_Angle =  (Pi/2.0)-0.1;
 	// if(Head_Tilt_Angle < -(Pi/3.0)) Head_Tilt_Angle = -(Pi/3.0);
-	if (this->humanoid.head.position.tilt > (M_PI_2 - 0.1))
-		this->humanoid.head.position.tilt = (M_PI_2 - 0.1);
-	if (this->humanoid.head.position.tilt < -(M_PI / 3.0))
-		this->humanoid.head.position.tilt = -M_PI / 3.0;
+	if (this->_humanoid.head.position.tilt > (M_PI_2 - 0.1))
+		this->_humanoid.head.position.tilt = (M_PI_2 - 0.1);
+	if (this->_humanoid.head.position.tilt < -(M_PI / 3.0))
+		this->_humanoid.head.position.tilt = -M_PI / 3.0;
 
-	this->humanoid.head.velocity.pan = panSpeed;
-	this->humanoid.head.velocity.tilt = tiltSpeed;
+	this->_humanoid.head.velocity.pan = panSpeed;
+	this->_humanoid.head.velocity.tilt = tiltSpeed;
 }
 
-mote::walking::Robot::Robot(mote::walking::Configuration &configuration, mote::walking::sensors::IMU &imu)
-	: configuration(configuration), imu(imu), ik(humanoid, configuration, imu)
+mote::walking::Robot::Robot(mote::walking::Configuration &configuration, mote::walking::sensors::IMU &imu, HumanoidPart &humanoid)
+	: configuration(configuration), imu(imu), ik(_humanoid, configuration, imu), _humanoid(humanoid)
 { }
 
 void mote::walking::Robot::start()

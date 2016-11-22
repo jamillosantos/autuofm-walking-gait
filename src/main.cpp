@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include <boost/program_options.hpp>
+#include <src/motors/motorsupdater.h>
 #include "engine/robot.h"
 
 int main(int argc, const char **argv)
@@ -34,8 +35,12 @@ int main(int argc, const char **argv)
 	std::cerr << std::endl;
 
 	mote::walking::sensors::IMU imu;
+	mote::walking::HumanoidPart robotPart;
 
-	mote::walking::Robot robot(configuration, imu);
+	mote::walking::motors::MotorUpdater updater(robotPart);
+	mote::walking::Robot robot(configuration, imu, robotPart);
+	// robot.start();
+	updater.start();
 	robot.run();
 
 	return 0;

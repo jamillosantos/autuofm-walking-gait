@@ -66,10 +66,9 @@ private:
 
 	data::Vector2td _velocity;
 	Configuration &configuration;
-	HumanoidPart humanoid;
+	HumanoidPart &_humanoid;
 	HumanoidIK ik;
 	sensors::IMU& imu;
-
 
 	int Check_Robot_Fall;
 
@@ -105,7 +104,7 @@ protected:
 	void init();
 
 public:
-	Robot(Configuration &configuration, sensors::IMU &imu);
+	Robot(Configuration &configuration, sensors::IMU &imu, HumanoidPart &humanoid);
 
 	void start();
 
