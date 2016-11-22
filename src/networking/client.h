@@ -60,12 +60,8 @@ private:
 protected:
 	std::mutex transactionMutex;
 
-	virtual int send(std::string const &msg);
-
-	virtual bool send(Json::Value &json);
-
 	virtual std::size_t read(char *buffer, unsigned int bufferLength, boost::posix_time::time_duration timeout,
-							 boost::system::error_code &ec);
+		boost::system::error_code &ec);
 
 	virtual bool read(Json::Value &json, boost::posix_time::time_duration timeout, boost::system::error_code &ec);
 
@@ -84,6 +80,10 @@ public:
 	const boost::posix_time::time_duration &defaultTimeout() const;
 
 	UDPClient &defaultTimeout(boost::posix_time::time_duration duration);
+
+	virtual int send(std::string const &msg);
+
+	virtual bool send(Json::Value &json);
 };
 }
 }

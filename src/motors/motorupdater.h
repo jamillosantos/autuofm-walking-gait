@@ -26,16 +26,15 @@ private:
 
 	HumanoidPart &_humanoidPart;
 
-	Robot _robot;
-
 	void runTrampoline();
+protected:
+	virtual void updateState() = 0;
+	virtual void flushChanges() = 0;
 public:
 	MotorUpdater(HumanoidPart &humanoidPart);
 
 	void start();
 	void stop();
-
-	virtual void flushChanges() = 0;
 };
 
 }

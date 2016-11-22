@@ -5,10 +5,5 @@
 
 #include "simuservo.h"
 
-void mote::walking::motors::SimuServo::apply()
+mote::walking::motors::SimuServo::SimuServo(const std::string &name) : name(name)
 { }
-
-mote::walking::motors::Servo *mote::walking::motors::SimuServoFactory::create()
-{
-	return new SimuServo();
-}

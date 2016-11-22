@@ -80,6 +80,8 @@ private:
 	int System_Voltage;
 	int Internal_Motion_Request;
 	int Actuators_Update;
+
+	volatile bool _running;
 protected:
 	RobotState getRobotState(double roll, double pitch);
 
@@ -107,6 +109,7 @@ public:
 	Robot(Configuration &configuration, sensors::IMU &imu, HumanoidPart &humanoid);
 
 	void start();
+	void stop();
 
 	void run();
 };

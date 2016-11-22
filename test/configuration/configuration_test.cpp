@@ -129,4 +129,7 @@ GTEST_TEST(configuration_configuration, loadFromFile)
 	ASSERT_EQ(0, configuration.walking.smoothingRatio.x);
 	ASSERT_EQ(0, configuration.walking.smoothingRatio.y);
 	ASSERT_EQ(0, configuration.walking.smoothingRatio.z);
+
+	ASSERT_EQ("127.0.0.1", configuration.simu->address);
+	ASSERT_EQ(4572, configuration.simu->port);
 }

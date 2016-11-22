@@ -3,12 +3,10 @@
  * @date November 21, 2016
  */
 
-#ifndef WALKING_SIMUSERVO_H
-#define WALKING_SIMUSERVO_H
+#ifndef WALKING_MOTORS_SIMUSERVO_H
+#define WALKING_MOTORS_SIMUSERVO_H
 
-#include <src/networking/client.h>
 #include "servo.h"
-#include "factory.h"
 
 namespace mote
 {
@@ -19,16 +17,9 @@ namespace motors
 class SimuServo
 	: public Servo
 {
-private:
-	std::string name;
 public:
-	virtual void apply() override;
-};
-
-class SimuServoFactory
-	: Factory
-{
-	virtual Servo *create() override;
+	SimuServo(const std::string &name);
+	std::string name;
 };
 }
 }

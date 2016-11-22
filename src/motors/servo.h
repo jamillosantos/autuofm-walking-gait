@@ -41,7 +41,7 @@ public:
 	 */
 	bool is_dirty()
 	{
-		return this->writeValue;
+		return this->writeValue.is_initialized();
 	}
 
 	/**
@@ -52,6 +52,16 @@ public:
 	const boost::optional<T> &read() const
 	{
 		return this->readValue;
+	}
+
+	/**
+	 * Value to be written.
+	 *
+	 * @return
+	 */
+	const boost::optional<T> &toWrite() const
+	{
+		return this->writeValue;
 	}
 
 	/**
@@ -86,8 +96,6 @@ class Servo
 public:
 	Value<double> speed;
 	Value<double> angle;
-
-	virtual void apply() = 0;
 };
 }
 }

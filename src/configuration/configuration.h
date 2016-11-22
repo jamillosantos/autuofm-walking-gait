@@ -6,12 +6,14 @@
 #ifndef WALKING_CONFIGURATION_H
 #define WALKING_CONFIGURATION_H
 
+#include <iostream>
 #include <string>
 
 #include <boost/filesystem.hpp>
 
 #include <json/reader.h>
 #include <json/value.h>
+#include <boost/optional/optional.hpp>
 
 #include "../data/vector.h"
 #include "../data/angle.h"
@@ -159,6 +161,16 @@ public:
 
 	virtual void fromJson(const Json::Value &json) override;
 };
+
+class Server
+	: public configuration::ConfigPart
+{
+public:
+	std::string address;
+	unsigned int port;
+
+	virtual void fromJson(const Json::Value &json) override;
+};
 }
 
 class Configuration
@@ -166,8 +178,9 @@ class Configuration
 public:
 	std::string robot;
 	configuration::Walking walking;
+	std::unique_ptr<configuration::Server> simu;
 
-	void loadFromFile(const std::string filePath);
+	void loadFromFile(const std::string &filePath);
 };
 }
 }

@@ -46,36 +46,10 @@ mote::walking::motors::Robot::Robot(mote::walking::HumanoidPart &humanoidPart)
 	: _humanoidPart(humanoidPart)
 { }
 
-void mote::walking::motors::Robot::init(mote::walking::motors::Factory &factory)
+mote::walking::motors::Servo *mote::walking::motors::Robot::add(Servo* servo)
 {
-	this->neck.lateral.reset(factory.create());
-	this->neck.transversal.reset(factory.create());
-
-	this->rightArm.shoulderLateral.reset(factory.create());
-	this->rightArm.shoulderFrontal.reset(factory.create());
-	this->rightArm.elbow.reset(factory.create());
-
-	this->leftArm.shoulderLateral.reset(factory.create());
-	this->leftArm.shoulderFrontal.reset(factory.create());
-	this->leftArm.elbow.reset(factory.create());
-
-	this->rightHip.lateral.reset(factory.create());
-	this->rightHip.frontal.reset(factory.create());
-	this->rightHip.transversal.reset(factory.create());
-
-	this->leftHip.lateral.reset(factory.create());
-	this->leftHip.frontal.reset(factory.create());
-	this->leftHip.transversal.reset(factory.create());
-
-	this->rightLeg.kneeLateral.reset(factory.create());
-
-	this->leftLeg.kneeLateral.reset(factory.create());
-
-	this->rightFoot.lateral.reset(factory.create());
-	this->rightFoot.frontal.reset(factory.create());
-
-	this->leftFoot.lateral.reset(factory.create());
-	this->leftFoot.frontal.reset(factory.create());
+	this->_servos.push_back(servo);
+	return servo;
 }
 
 void mote::walking::motors::Robot::update()
@@ -126,4 +100,14 @@ void mote::walking::motors::Robot::update()
 	this->leftFoot.frontal->angle = this->_humanoidPart.leftFoot.angle.roll;
 	this->leftFoot.lateral->speed = this->_humanoidPart.leftFoot.velocity.pitch;
 	this->leftFoot.frontal->speed = this->_humanoidPart.leftFoot.velocity.roll;
+}
+
+std::vector<mote::walking::motors::Servo*>& mote::walking::motors::Robot::servos()
+{
+	return this->_servos;
+}
+
+void mote::walking::motors::Robot::clear()
+{
+	this->_servos.clear();
 }

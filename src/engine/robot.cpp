@@ -7,6 +7,8 @@
 
 void mote::walking::Robot::run()
 {
+	this->_running = true;
+
 	this->init();
 	this->_velocity.zero();
 	// Buzzer(200);
@@ -22,9 +24,9 @@ void mote::walking::Robot::run()
 
 	VERBOSE("Starting main loop!");
 	//main task loop
-	for( ;; )
+	while (this->_running)
 	{
-		VERBOSE("Tick!");
+		// VERBOSE("Tick!");
 		// togglePin(RED_LED_485EXP);
 
 		if ((
@@ -642,4 +644,14 @@ void mote::walking::Robot::start()
 {
 	if (!this->_thread)
 		this->_thread.reset(new std::thread(&mote::walking::Robot::run, this));
+}
+
+void mote::walking::Robot::stop()
+{
+	if (this->_thread)
+	{
+		this->_running = false;
+		this->_thread->join();
+		this->_thread.reset();
+	}
 }

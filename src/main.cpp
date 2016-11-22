@@ -1,13 +1,15 @@
 #include <iostream>
 
 #include <boost/program_options.hpp>
-#include <src/motors/motorsupdater.h>
+#include <csignal>
+
+#include "motors/simumotorupdater.h"
 #include "engine/robot.h"
 
 int main(int argc, const char **argv)
 {
-	using namespace mote;
 	namespace po = boost::program_options;
+	using namespace mote::walking;
 
 	boost::filesystem::path configurationDirectory(CONFIGURATION_FOLDER);
 	std::string configurationFile((configurationDirectory / "arash.json").string());
@@ -29,18 +31,27 @@ int main(int argc, const char **argv)
 	}
 
 	std::cerr << "Configuration file: " << configurationFile << std::endl;
-	mote::walking::Configuration configuration;
+	Configuration configuration;
 	configuration.loadFromFile(configurationFile);
 	std::cerr << "-- Robot: " << configuration.robot << std::endl;
 	std::cerr << std::endl;
 
-	mote::walking::sensors::IMU imu;
-	mote::walking::HumanoidPart robotPart;
+	sensors::IMU imu;
+	HumanoidPart robotPart;
 
-	mote::walking::motors::MotorUpdater updater(robotPart);
-	mote::walking::Robot robot(configuration, imu, robotPart);
-	// robot.start();
-	updater.start();
+	Robot robot(configuration, imu, robotPart);
+	std::unique_ptr<networking::UDPClient> udpClient;
+	std::unique_ptr<motors::SimuMotorUpdater> updater;
+	if (configuration.simu)
+	{
+		udpClient.reset(new networking::UDPClient(configuration.simu->address, configuration.simu->port));
+		updater.reset(new motors::SimuMotorUpdater(*udpClient, robotPart));
+		updater->init();
+		updater->start();
+	}
+	std::signal(SIGTERM, [](int signum) {
+		std::cout << "Stopping ..." << std::endl;
+	});
 	robot.run();
 
 	return 0;

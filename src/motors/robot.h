@@ -7,9 +7,9 @@
 #define WALKING_ROBOT_H
 
 #include <memory>
-#include <src/engine/part.h>
+
+#include "../engine/part.h"
 #include "servo.h"
-#include "factory.h"
 
 namespace mote
 {
@@ -80,6 +80,10 @@ class Robot
 {
 private:
 	HumanoidPart &_humanoidPart;
+	std::vector<Servo*> _servos;
+protected:
+	Servo* add(Servo* servo);
+	void clear();
 public:
 	robot::Neck neck;
 
@@ -97,9 +101,11 @@ public:
 
 	Robot(HumanoidPart &humanoidPart);
 
-	virtual void init(Factory &factory);
+	virtual void init() = 0;
 
 	virtual void update();
+
+	std::vector<Servo*> &servos();
 };
 }
 }

@@ -5,7 +5,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 message("Configuration")
 set(CONFIGURATION_FOLDER "${CMAKE_SOURCE_DIR}/conf" CACHE FILEPATH "Default configuration directory")
-set(THIRD_PARTY_LIBRARIES "${CMAKE_SOURCE_DIR}/libs" CACHE FILEPATH "Third party libraries directory")
+set(THIRD_PARTY_LIBRARIES "$ENV{HOME}/libs" CACHE FILEPATH "Third party libraries directory")
 set(ENABLE_TEST ON CACHE BOOL "Enable testing for this build")
 set(TEST_OUTPUT ${CMAKE_BINARY_DIR} CACHE FILEPATH "Output directory of tests")
 set(TEST_RESOURCE_DIR ${CMAKE_SOURCE_DIR}/test/resources CACHE FILEPATH "Resource folder for tests")
@@ -308,14 +308,26 @@ set(SOURCE_FILES
 	src/motors/servo.cpp
 	src/motors/servo.h
 
-	src/motors/motorsupdater.cpp
-	src/motors/motorsupdater.h
+	src/motors/motorupdater.cpp
+	src/motors/motorupdater.h
 
-	src/consts.h
+	src/motors/simumotorupdater.cpp
+	src/motors/simumotorupdater.h
+
+	src/motors/simuservo.cpp
+	src/motors/simuservo.h
+
+	src/motors/robot.cpp
+	src/motors/robot.h
+
+	src/motors/simurobot.cpp
+	src/motors/simurobot.h
 
 	src/networking/client.cpp
 	src/networking/client.h
-	src/motors/simuservo.cpp src/motors/simuservo.h src/motors/factory.cpp src/motors/factory.h src/motors/robot.cpp src/motors/robot.h)
+
+	src/consts.h
+)
 add_executable(walking
 	src/main.cpp
 
@@ -338,7 +350,7 @@ if (${ENABLE_TEST})
 		${SOURCE_FILES}
 		test/resources.cpp
 		test/resources.h
-	)
+		src/motors/simumotorupdater.cpp src/motors/simumotorupdater.h)
 	set_target_properties(run_tests PROPERTIES
 		RUNTIME_OUTPUT_DIRECTORY ${TEST_OUTPUT}
 		)
