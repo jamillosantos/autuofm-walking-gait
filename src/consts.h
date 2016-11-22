@@ -11,6 +11,8 @@
 #define M_2xPIl (M_PIl * 2)
 #define M_32_PIl (3.0 * M_PI_2l)
 
+#define RAD2DEG (180.0/M_PI_2)
+
 
 #define VERBOSE_HEADER "[VERBOSE] " << __FILE__ << ":" << __LINE__ << ") "
 #define VERBOSE(x) std::cout << VERBOSE_HEADER << x << std::endl

@@ -180,6 +180,10 @@
 			"theta": 0
 		}
 	},
+	"controller": {
+		"address": "127.0.0.1",
+		"port": 4573
+	},
 	"simu": {
 		"address": "127.0.0.1",
 		"port": 4572

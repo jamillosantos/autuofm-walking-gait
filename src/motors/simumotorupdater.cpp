@@ -3,6 +3,7 @@
  * @date November 22, 2016
  */
 
+#include <src/consts.h>
 #include "simumotorupdater.h"
 #include "simuservo.h"
 
@@ -29,9 +30,9 @@ void mote::walking::motors::SimuMotorUpdater::flushChanges()
 		{
 			Json::Value &jsonServo = params[simuServo->name];
 			if (simuServo->angle.is_dirty())
-				jsonServo["Angle"] = *simuServo->angle.toWrite();
+				jsonServo["Angle"] = (*simuServo->angle.toWrite()) * RAD2DEG;
 			if (simuServo->speed.is_dirty())
-				jsonServo["Speed"] = *simuServo->speed.toWrite();
+				jsonServo["Speed"] = (*simuServo->speed.toWrite()) * (1023);
 		}
 	}
 	this->_client.send(json);

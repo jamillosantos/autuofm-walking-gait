@@ -59,24 +59,6 @@ std::size_t mote::walking::networking::UDPClient::read(
 		this->io_service.run_one();
 	}
 	while (ec == boost::asio::error::would_block);
-
-	return length;
-
-	/*
-	boost::system::error_code ec;
-	udp::endpoint sender_endpoint;
-	size_t len = this->socket.receive_from(boost::asio::buffer(buffer, bufferLength), sender_endpoint, 0, ec);
-	if ((!ec) && (len > 0))
-	{
-		VERBOSEUDPCLIENT("IN(" << this->address << ":" << this->port << ")<< " << buffer);
-		return true;
-	}
-	else
-	{
-		VERBOSEUDPCLIENT("IN(" << this->address << ":" << this->port << ")<< FAILED! (" << len << ")(" << ec.category().name() << ":" << ec.value() << ":" << ec.message() << ")");
-		return false;
-	}
-	 */
 }
 
 bool mote::walking::networking::UDPClient::read(
