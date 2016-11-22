@@ -18,6 +18,7 @@ template <typename T>
 class Value
 {
 private:
+	boost::optional<T> lastWriteValue;
 	boost::optional<T> writeValue;
 	boost::optional<T> readValue;
 public:
@@ -29,7 +30,8 @@ public:
 	 */
 	Value& operator=(T value)
 	{
-		this->writeValue = value;
+		if ((!this->lastWriteValue) || (this->lastWriteValue != value))
+			this->writeValue = value;
 		return *this;
 	}
 
@@ -60,6 +62,14 @@ public:
 	void read(T value)
 	{
 		this->readValue = value;
+	}
+
+	void write()
+	{
+		if (this->writeValue)
+			this->lastWriteValue = this->writeValue;
+		else
+			this->lastWriteValue.reset();
 	}
 
 	/**

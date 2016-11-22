@@ -281,6 +281,9 @@ set(SOURCE_FILES
 	src/data/vector.cpp
 	src/data/vector.h
 
+	src/data/json.cpp
+	src/data/json.h
+
 	src/engine/part.cpp
 	src/engine/part.h
 
@@ -305,8 +308,14 @@ set(SOURCE_FILES
 	src/motors/servo.cpp
 	src/motors/servo.h
 
+	src/motors/motorsupdater.cpp
+	src/motors/motorsupdater.h
+
 	src/consts.h
-)
+
+	src/networking/client.cpp
+	src/networking/client.h
+	src/motors/simuservo.cpp src/motors/simuservo.h src/motors/factory.cpp src/motors/factory.h src/motors/robot.cpp src/motors/robot.h)
 add_executable(walking
 	src/main.cpp
 
