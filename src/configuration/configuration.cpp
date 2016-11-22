@@ -3,7 +3,6 @@
  * @date September 27, 2016
  */
 
-#include <src/consts.h>
 #include "configuration.h"
 
 void mote::walking::Configuration::loadFromFile(const std::string &filePath)
@@ -30,6 +29,11 @@ void mote::walking::Configuration::loadFromFile(const std::string &filePath)
 				{
 					this->simu.reset(new configuration::Server());
 					this->simu->fromJson(*it);
+				}
+				else if (name == "controller")
+				{
+					this->controller.reset(new configuration::Server());
+					this->controller->fromJson(*it);
 				}
 				else
 				{

@@ -18,6 +18,8 @@
 #include "../data/vector.h"
 #include "../data/angle.h"
 
+#include "../consts.h"
+
 namespace mote
 {
 namespace walking
@@ -179,6 +181,7 @@ public:
 	std::string robot;
 	configuration::Walking walking;
 	std::unique_ptr<configuration::Server> simu;
+	std::unique_ptr<configuration::Server> controller;
 
 	void loadFromFile(const std::string &filePath);
 };
