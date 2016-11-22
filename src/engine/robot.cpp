@@ -10,7 +10,7 @@ void mote::walking::Robot::run()
 	this->_running = true;
 
 	this->init();
-	this->_velocity.zero();
+	this->velocity.zero();
 	// Buzzer(200);
 
 	VERBOSE("Stand init 1!");
@@ -31,15 +31,16 @@ void mote::walking::Robot::run()
 
 		if ((
 				(
-					(this->_velocity.x != 0)
-					|| (this->_velocity.y != 0)
-					|| (this->_velocity.theta != 0)
+					(this->velocity.x != 0)
+					|| (this->velocity.y != 0)
+					|| (this->velocity.theta != 0)
 				)
 				&& (this->Motion_Ins == No_Motion)
 				&& (this->Internal_Motion_Request == No_Motion)
 			)
-			// && (this->System_Voltage >= (int)WEP[P_Min_Voltage_Limit])
-			&& (this->System_Voltage >= this->configuration.walking.minVoltage)
+			// OLD LINE: && (this->System_Voltage >= (int)WEP[P_Min_Voltage_Limit])
+			// TODO Uncomment "NEW LINE" (below) after plugging in the system voltage controller
+			// NEW LINE: && (this->System_Voltage >= this->configuration.walking.minVoltage)
 		) {
 			this->standInitT(0.5, 50);
 
@@ -64,9 +65,9 @@ void mote::walking::Robot::run()
 			//main gait
 			while((
 					(
-						(this->_velocity.x != 0)
-						|| (this->_velocity.y != 0)
-						|| (this->_velocity.theta != 0)
+						(this->velocity.x != 0)
+						|| (this->velocity.y != 0)
+						|| (this->velocity.theta != 0)
 					)
 					&& (this->Motion_Ins == No_Motion)
 					&& (this->Internal_Motion_Request == No_Motion)
@@ -76,9 +77,9 @@ void mote::walking::Robot::run()
 			)
 				// this->omniGait(Vx + WEP[Vx_Offset], Vy + WEP[Vy_Offset], Vt + WEP[Vt_Offset]); // execute omni-directional gait
 				this->omniGait(
-					this->_velocity.x + this->configuration.walking.velocityOffset.x,
-					this->_velocity.y + this->configuration.walking.velocityOffset.y,
-					this->_velocity.theta + this->configuration.walking.velocityOffset.theta
+					this->velocity.x + this->configuration.walking.velocityOffset.x,
+					this->velocity.y + this->configuration.walking.velocityOffset.y,
+					this->velocity.theta + this->configuration.walking.velocityOffset.theta
 				); // execute omni-directional gait
 
 			//finish gate
@@ -208,8 +209,8 @@ void mote::walking::Robot::init()
 	VERBOSE("Initialization started!");
 	this->standInit(0.1);  //ititialie robot to stand position
 
-	this->_velocity.zero();
-	this->_velocity.theta = 0;
+	this->velocity.zero();
+	this->velocity.theta = 0;
 
 	Motion_Ins = No_Motion;
 	Internal_Motion_Request = No_Motion;

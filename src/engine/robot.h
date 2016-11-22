@@ -64,7 +64,6 @@ class Robot
 private:
 	std::unique_ptr<std::thread> _thread;
 
-	data::Vector2td _velocity;
 	Configuration &configuration;
 	HumanoidPart &_humanoid;
 	HumanoidIK ik;
@@ -107,6 +106,8 @@ protected:
 
 public:
 	Robot(Configuration &configuration, sensors::IMU &imu, HumanoidPart &humanoid);
+
+	data::Vector2td velocity;
 
 	void start();
 	void stop();

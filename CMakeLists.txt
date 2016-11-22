@@ -323,11 +323,20 @@ set(SOURCE_FILES
 	src/motors/simurobot.cpp
 	src/motors/simurobot.h
 
+	src/motors/simumotorupdater.cpp
+	src/motors/simumotorupdater.h
+
 	src/networking/client.cpp
 	src/networking/client.h
 
+	src/networking/server.cpp
+	src/networking/server.h
+
+	src/networking/controller.cpp
+	src/networking/controller.h
+
 	src/consts.h
-)
+	)
 add_executable(walking
 	src/main.cpp
 
@@ -340,7 +349,6 @@ target_link_libraries(walking
 if (${ENABLE_TEST})
 	message("Tests")
 	enable_testing()
-	include_directories(${CMAKE_SOURCE_DIR})
 	file(GLOB_RECURSE TEST_SRCS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} test/*_test.cpp)
 
 	add_executable(
@@ -350,7 +358,7 @@ if (${ENABLE_TEST})
 		${SOURCE_FILES}
 		test/resources.cpp
 		test/resources.h
-		src/motors/simumotorupdater.cpp src/motors/simumotorupdater.h)
+	)
 	set_target_properties(run_tests PROPERTIES
 		RUNTIME_OUTPUT_DIRECTORY ${TEST_OUTPUT}
 		)

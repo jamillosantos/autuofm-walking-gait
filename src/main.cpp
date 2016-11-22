@@ -5,6 +5,7 @@
 
 #include "motors/simumotorupdater.h"
 #include "engine/robot.h"
+#include "networking/controller.h"
 
 int main(int argc, const char **argv)
 {
@@ -42,6 +43,8 @@ int main(int argc, const char **argv)
 	Robot robot(configuration, imu, robotPart);
 	std::unique_ptr<networking::UDPClient> udpClient;
 	std::unique_ptr<motors::SimuMotorUpdater> updater;
+	std::unique_ptr<networking::Controller> controller;
+	std::unique_ptr<boost::asio::io_service> ioService;
 	if (configuration.simu)
 	{
 		udpClient.reset(new networking::UDPClient(configuration.simu->address, configuration.simu->port));
@@ -49,10 +52,20 @@ int main(int argc, const char **argv)
 		updater->init();
 		updater->start();
 	}
-	std::signal(SIGTERM, [](int signum) {
-		std::cout << "Stopping ..." << std::endl;
-	});
-	robot.run();
+	if (configuration.controller)
+	{
+		robot.start();
+
+		ioService.reset(new boost::asio::io_service());
+		controller.reset(new networking::Controller(*ioService, configuration.controller->port, robot));
+		VERBOSE("Controller enabled at port " << configuration.controller->port << ".");
+		controller->run();
+	}
+	else
+	{
+		VERBOSE("Controller is not enabled.");
+		robot.run();
+	}
 
 	return 0;
 }

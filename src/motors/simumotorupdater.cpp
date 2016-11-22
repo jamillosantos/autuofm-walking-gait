@@ -3,9 +3,7 @@
  * @date November 22, 2016
  */
 
-#include <src/consts.h>
 #include "simumotorupdater.h"
-#include "simuservo.h"
 
 mote::walking::motors::SimuMotorUpdater::SimuMotorUpdater(mote::walking::networking::UDPClient &client,
 	mote::walking::HumanoidPart &humanoidPart)

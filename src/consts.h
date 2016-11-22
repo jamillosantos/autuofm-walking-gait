@@ -30,10 +30,10 @@
 #define VERBOSEBNEL(x)
 */
 
-#define ERROR_HEADER "[ERROR] " << __FILENAME__ << ":" << __LINE__ << ") "
-#define ERROR(x) std::cout << ERROR_HEADER << x << std::endl
-#define ERRORNEL(x) std::cout << ERROR_HEADER << x
-#define ERRORB(x) std::cout << x << std::endl
-#define ERRORBNEL(x) std::cout << x
+#define ERROR_HEADER "[ERROR] " << __FILE__ << ":" << __LINE__ << ") "
+#define ERROR(x) std::cerr << ERROR_HEADER << x << std::endl
+#define ERRORNEL(x) std::cerr << ERROR_HEADER << x
+#define ERRORB(x) std::cerr << x << std::endl
+#define ERRORBNEL(x) std::cerr << x
 
 #endif //WALKING_CONSTS_H

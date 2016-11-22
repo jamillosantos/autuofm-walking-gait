@@ -6,9 +6,13 @@
 #ifndef WALKING_MOTORS_SIMUMOTORSUPDATER_H
 #define WALKING_MOTORS_SIMUMOTORSUPDATER_H
 
-#include <src/networking/client.h>
+#include "../networking/client.h"
+
+#include "../consts.h"
 #include "motorupdater.h"
 #include "simurobot.h"
+#include "simuservo.h"
+
 
 namespace mote
 {
