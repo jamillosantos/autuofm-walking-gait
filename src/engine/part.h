@@ -28,6 +28,10 @@ public:
 	data::Vector3d position;
 	data::Angle3d angle;
 
+	Leg();
+
+	Leg(const Leg& leg);
+
 	virtual void zero() override;
 };
 

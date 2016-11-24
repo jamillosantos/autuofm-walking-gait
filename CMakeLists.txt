@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.4)
 project(walking)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 
 message("Configuration")
 set(CONFIGURATION_FOLDER "${CMAKE_SOURCE_DIR}/conf" CACHE FILEPATH "Default configuration directory")
@@ -35,6 +35,7 @@ set(BOOST_DOWNLOAD_MD5 "5fb94629535c19e48703bdb2b2e9490f"
 	CACHE STRING "Boost library download MD5 hash for integrity verification")
 set(BOOST_REQUIRED_COMPONENTS "system;filesystem;regex;log_setup;log;program_options"
 	CACHE STRING "Boost library components")
+set(Boost_USE_MULTITHREADED ON)
 
 # JSONCPP
 set(JSONCPP_VERSION "1.7.7"
@@ -197,7 +198,7 @@ if (NOT ${Boost_FOUND})
 		message("-- Compiling and installing libboost")
 		file(MAKE_DIRECTORY ${BOOST_DIR}/install)
 		execute_process(
-			COMMAND "${BOOST_DIR}/b2" "--prefix=${BOOST_DIR}/install" install
+			COMMAND "${BOOST_DIR}/b2" "link=shared" "threading=multi" "--prefix=${BOOST_DIR}/install" install
 			WORKING_DIRECTORY ${BOOST_DIR}
 			RESULT_VARIABLE BOOST_RESULT
 		)
@@ -270,6 +271,7 @@ set(Walking_LIBRARIES
 	pthread
 	${Boost_LIBRARIES}
 )
+
 
 set(SOURCE_FILES
 	src/data/servo.cpp

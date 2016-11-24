@@ -18,61 +18,61 @@ void mote::walking::HumanoidIK::update(double _R_Leg_Speed, double _L_Leg_Speed,
 	 * Right leg
 	 */
 	// _R_Leg_Ik[X_Position] += WEP[P_Right_Leg_X_Offset] + WEP[P_COM_X_offset] + (MPU_X * WEP[P_Stablizer_COM_X_Shift_Gain]) + (Gyro_X * WEP[P_Gyro_Stablizer_COM_X_Shift_Gain]);
-	this->humanoid.rightLeg.position.x +=
+	rightLeg.position.x +=
 		this->configuration.walking.rightLeg.positionOffset.x + this->configuration.walking.com.positionOffset.x
 		+ (this->imu.mpu.position.x * this->configuration.walking.stabilizer.comShiftGain.x)
 		+ (this->imu.gyro.data.x * this->configuration.walking.gyroStabilizer.comShiftGain.x);
 	// _R_Leg_Ik[Y_Position] += WEP[P_Right_Leg_Y_Offset] + WEP[P_COM_Y_offset] - (MPU_Y * WEP[P_Stablizer_COM_Y_Shift_Gain]) - (Gyro_Y * WEP[P_Gyro_Stablizer_COM_Y_Shift_Gain]);
-	this->humanoid.rightLeg.position.y +=
+	rightLeg.position.y +=
 		this->configuration.walking.rightLeg.positionOffset.y + this->configuration.walking.com.positionOffset.y
 		- (this->imu.mpu.position.y * this->configuration.walking.stabilizer.comShiftGain.y)
 		- (this->imu.gyro.data.y * this->configuration.walking.gyroStabilizer.comShiftGain.y);
 	// _R_Leg_Ik[Z_Position] += WEP[P_Right_Leg_Z_Offset] + WEP[P_COM_Z_offset];
-	this->humanoid.rightLeg.position.z +=
+	rightLeg.position.z +=
 		this->configuration.walking.rightLeg.positionOffset.z + this->configuration.walking.com.positionOffset.z;
 
 	// _R_Leg_Ik[Roll_Angle] += WEP[P_Right_Leg_Roll_Offset]  + WEP[P_COM_Roll_offset];
-	this->humanoid.rightLeg.angle.roll +=
+	rightLeg.angle.roll +=
 		this->configuration.walking.rightLeg.angleOffset.roll + this->configuration.walking.com.angleOffset.roll;
 	// _R_Leg_Ik[Pitch_Angle]+= WEP[P_Right_Leg_Pitch_Offset] + WEP[P_COM_Pitch_offset];
-	this->humanoid.rightLeg.angle.pitch +=
+	rightLeg.angle.pitch +=
 		this->configuration.walking.rightLeg.angleOffset.pitch + this->configuration.walking.com.angleOffset.pitch;
 	// _R_Leg_Ik[Yaw_Angle]  += WEP[P_Right_Leg_Yaw_Offset]   + WEP[P_COM_Yaw_offset];
-	this->humanoid.rightLeg.angle.yaw +=
+	rightLeg.angle.yaw +=
 		this->configuration.walking.rightLeg.angleOffset.yaw + this->configuration.walking.com.angleOffset.yaw;
 
 	/**
 	 * Left leg
 	 */
 	//_L_Leg_Ik[X_Position] += WEP[P_Left_Leg_X_Offset] + WEP[P_COM_X_offset] + (MPU_X * WEP[P_Stablizer_COM_X_Shift_Gain]) + (Gyro_X * WEP[P_Gyro_Stablizer_COM_X_Shift_Gain]);
-	this->humanoid.leftLeg.position.x +=
+	leftLeg.position.x +=
 		this->configuration.walking.leftLeg.positionOffset.x + this->configuration.walking.com.positionOffset.x
 		+ (this->imu.mpu.position.x * this->configuration.walking.stabilizer.comShiftGain.x)
 		+ (this->imu.gyro.data.x * this->configuration.walking.gyroStabilizer.comShiftGain.x);
 	// _L_Leg_Ik[Y_Position] += WEP[P_Left_Leg_Y_Offset] + WEP[P_COM_Y_offset] + (MPU_Y * WEP[P_Stablizer_COM_Y_Shift_Gain]) + (Gyro_Y * WEP[P_Gyro_Stablizer_COM_Y_Shift_Gain]);
-	this->humanoid.leftLeg.position.y +=
+	leftLeg.position.y +=
 		this->configuration.walking.leftLeg.positionOffset.y + this->configuration.walking.com.positionOffset.y
 		+ (this->imu.mpu.position.y * this->configuration.walking.stabilizer.comShiftGain.y)
 		+ (this->imu.gyro.data.y * this->configuration.walking.gyroStabilizer.comShiftGain.y);
 	// _L_Leg_Ik[Z_Position] += WEP[P_Left_Leg_Z_Offset] + WEP[P_COM_Z_offset];
-	this->humanoid.leftLeg.position.z +=
+	leftLeg.position.z +=
 		this->configuration.walking.leftLeg.positionOffset.z + this->configuration.walking.com.positionOffset.z;
 
 	// _L_Leg_Ik[Roll_Angle] += WEP[P_Left_Leg_Roll_Offset]  + WEP[P_COM_Roll_offset];
-	this->humanoid.leftLeg.angle.roll +=
+	leftLeg.angle.roll +=
 		this->configuration.walking.leftLeg.angleOffset.roll + this->configuration.walking.com.angleOffset.roll;
 	// _L_Leg_Ik[Pitch_Angle] += WEP[P_Left_Leg_Pitch_Offset] + WEP[P_COM_Pitch_offset];
-	this->humanoid.leftLeg.angle.pitch +=
+	leftLeg.angle.pitch +=
 		this->configuration.walking.leftLeg.angleOffset.pitch + this->configuration.walking.com.angleOffset.pitch;
 	// _L_Leg_Ik[Yaw_Angle]  += WEP[P_Left_Leg_Yaw_Offset]   + WEP[P_COM_Yaw_offset];
-	this->humanoid.leftLeg.angle.yaw +=
+	leftLeg.angle.yaw +=
 		this->configuration.walking.leftLeg.angleOffset.yaw + this->configuration.walking.com.angleOffset.yaw;
 
 	//calculate absolute Z
 	// _R_Leg_Ik[Z_Position]= WEP[P_Leg_Length] - _R_Leg_Ik[Z_Position];
-	this->humanoid.rightLeg.position.z = this->configuration.walking.legLength + this->humanoid.rightLeg.position.z;
+	rightLeg.position.z = this->configuration.walking.legLength - rightLeg.position.z;
 	// _L_Leg_Ik[Z_Position]= WEP[P_Leg_Length] - _L_Leg_Ik[Z_Position];
-	this->humanoid.leftLeg.position.z = this->configuration.walking.legLength + this->humanoid.leftLeg.position.z;
+	leftLeg.position.z = this->configuration.walking.legLength - leftLeg.position.z;
 
 	/**
 	 * Right arm joints update
@@ -177,17 +177,17 @@ void mote::walking::HumanoidIK::update(double _R_Leg_Speed, double _L_Leg_Speed,
 	// double tmpRightX = (_R_Leg_Ik[X_Position] * cos(_R_Leg_Ik[Yaw_Angle]) + _R_Leg_Ik[Y_Position] * sin(_R_Leg_Ik[Yaw_Angle]));
 	double
 		tmpRightX =
-			(rightLeg.position.x * std::cos(rightLeg.angle.yaw))
-			+ (rightLeg.position.y * std::sin(rightLeg.angle.yaw)),
+			(rightLeg.position.x * std::cos(rightLeg.angle.yaw)) + (rightLeg.position.y * std::sin(rightLeg.angle.yaw)),
 	// double tmpRightY = (_R_Leg_Ik[X_Position] * sin(_R_Leg_Ik[Yaw_Angle]) + _R_Leg_Ik[Y_Position] * cos(_R_Leg_Ik[Yaw_Angle]));
 		tmpRightY =
 			(rightLeg.position.x * std::sin(rightLeg.angle.yaw))
 			+ (rightLeg.position.y * std::cos(rightLeg.angle.yaw)),
 	// double Tmp_R_Z= _R_Leg_Ik[Z_Position];
 		tmpRightZ = rightLeg.position.z;
-	tmpAngle = atan2(tmpRightY, tmpRightZ);
+	// Tmp_angle= atan2(Tmp_R_Y, Tmp_R_Z);
+	tmpAngle = std::atan2(tmpRightY, tmpRightZ);
 	// Angle[Id_Right_Hip_Roll]  = tmpAngle + _R_Leg_Ik[Roll_Angle] / 2.0 + WEP[P_Right_Leg_Hip_Roll_Offset]  - (MPU_Y * WEP[P_Stablizer_Hip_Roll_Gain])  - (Gyro_Y * WEP[P_Gyro_Stablizer_Hip_Roll_Gain]);
-	this->humanoid.leftHip.angle.roll =
+	this->humanoid.rightHip.angle.roll =
 		tmpAngle + (rightLeg.angle.roll / 2.0) + this->configuration.walking.rightLeg.hipAngleOffset.roll
 		- (this->imu.mpu.position.y * this->configuration.walking.stabilizer.hipGain.roll)
 		- (this->imu.gyro.data.y * this->configuration.walking.gyroStabilizer.hipGain.roll);
@@ -220,8 +220,11 @@ void mote::walking::HumanoidIK::update(double _R_Leg_Speed, double _L_Leg_Speed,
 		+ (this->imu.mpu.position.y * this->configuration.walking.stabilizer.footGain.roll)
 		+ (this->imu.gyro.data.y * this->configuration.walking.gyroStabilizer.footGain.roll);
 
+	// Tmp_R_Z= sqrt((Tmp_R_Y * Tmp_R_Y) + (Tmp_R_Z * Tmp_R_Z));
 	tmpRightZ = std::sqrt((tmpRightY * tmpRightY) + (tmpRightZ * tmpRightZ));
+	// dfoot= sqrt((Tmp_R_Z * Tmp_R_Z) + (Tmp_R_X * Tmp_R_X));
 	dfoot = std::sqrt((tmpRightZ * tmpRightZ) + (tmpRightX * tmpRightX));
+	// alpha= atan2(Tmp_R_X, Tmp_R_Z);
 	alpha = std::atan2(tmpRightX, tmpRightZ);
 	// beta = acos(dfoot / WEP[P_Leg_Length]);
 	beta = std::acos(dfoot / this->configuration.walking.legLength);

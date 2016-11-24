@@ -30,7 +30,7 @@ public:
 		: x(x), y(y)
 	{ }
 
-	Vector2(Vector2& vector)
+	Vector2(const Vector2& vector)
 		: x(vector.x), y(vector.y)
 	{ }
 
@@ -65,11 +65,11 @@ public:
 		: Vector2<T>(), z(0)
 	{ }
 
-	Vector3(Vector3<T> &vector)
+	Vector3(const Vector3<T> &vector)
 		: Vector2<T>(vector), z(vector.z)
 	{ }
 
-	Vector3(Vector2<T> &vector)
+	Vector3(const Vector2<T> &vector)
 		: Vector2<T>(vector), z(0)
 	{ }
 

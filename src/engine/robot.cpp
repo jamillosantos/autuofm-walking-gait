@@ -200,7 +200,7 @@ void mote::walking::Robot::run()
 			}//external motion request switch
 			*/
 		}//main if/else
-		// this->humanoid.dump();
+		// this->_humanoid.dump();
 	}
 }
 
@@ -311,6 +311,7 @@ void mote::walking::Robot::standInitT(double speed, int time)
 		std::this_thread::sleep_for(std::chrono::milliseconds(20));
 		//vTaskDelay(20);
 		std::cerr << ".";
+		// this->_humanoid.dump();
 	}
 	std::cerr << std::endl;
 }
@@ -504,9 +505,15 @@ void mote::walking::Robot::omniGait(double vx, double vy, double vt)
 		// L_Arm[I_A_Ve]      = 0.05;
 		leftArm.velocityElbow = 0.05;
 
+		VERBOSE("-- Omni");
+		VERBOSE("RightLeg: " << rightLeg.position.x << ", " << rightLeg.position.y << ", " << rightLeg.position.z);
+		VERBOSE("LeftLeg: " << leftLeg.position.x << ", " << leftLeg.position.y << ", " << leftLeg.position.z);
+
 		//update robotis joints
 		// Update_Ik(Joint_Speed, Joint_Speed, R_Leg_Ik, L_Leg_Ik, R_Arm, L_Arm);
 		this->ik.update(Joint_Speed, Joint_Speed, rightLeg, leftLeg, rightArm, leftArm);
+		this->_humanoid.dump();
+
 		// vTaskDelay(WEP[P_Gait_Frequency]*100);
 		std::this_thread::sleep_for(std::chrono::milliseconds(
 			(unsigned int) std::round(this->configuration.walking.engine.gaitFrequency * 100))

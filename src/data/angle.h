@@ -29,7 +29,7 @@ public:
 		: pitch(pitch), roll(roll)
 	{ }
 
-	Angle2(Angle2<T>& angle)
+	Angle2(const Angle2<T>& angle)
 		: pitch(angle.pitch), roll(angle.roll)
 	{ }
 
@@ -70,11 +70,11 @@ public:
 	Angle3()
 	{ }
 
-	Angle3(Angle3<T> &angle)
-		: Angle2<T>(angle), yaw(0)
+	Angle3(const Angle3<T> &angle)
+		: Angle2<T>(angle), yaw(angle.yaw)
 	{ }
 
-	Angle3(Angle2<T>& angle)
+	Angle3(const Angle2<T>& angle)
 		: Angle2<T>(angle), yaw(0)
 	{ }
 
