@@ -5,11 +5,9 @@
 
 #include "configuration.h"
 
-void mote::walking::Configuration::loadFromFile(const std::string &filePath)
+void mote::walking::Configuration::loadFromFile(std::string const &filePath)
 {
-	VERBOSE("Configuration::loadFromFile: " << filePath);
-	boost::filesystem::path filePathPath(filePath);
-	if (boost::filesystem::exists(filePathPath))
+	// if (boost::filesystem::exists(filePath))
 	{
 		std::ifstream jsonStream(filePath);
 		if (jsonStream.good())
@@ -40,15 +38,12 @@ void mote::walking::Configuration::loadFromFile(const std::string &filePath)
 					// TODO: Throw an exception!
 				}
 			}
+			VERBOSE("Finishing loadFromFile");
 		}
 		else
 		{
 			// TODO: Throw an exception.
 		}
-	}
-	else
-	{
-		// TODO: Throw an exception.
 	}
 }
 
