@@ -42,6 +42,7 @@ void mote::walking::Robot::run()
 			// TODO Uncomment "NEW LINE" (below) after plugging in the system voltage controller
 			// NEW LINE: && (this->System_Voltage >= this->configuration.walking.minVoltage)
 		) {
+			VERBOSE("Robot1");
 			this->standInitT(0.5, 50);
 
 			//start gait
@@ -73,7 +74,7 @@ void mote::walking::Robot::run()
 					&& (this->Internal_Motion_Request == No_Motion)
 				  )
 				  // && (this->System_Voltage >= (int)WEP[P_Min_Voltage_Limit])
-				  && (this->System_Voltage >= this->configuration.walking.minVoltage)
+				  // && (this->System_Voltage >= this->configuration.walking.minVoltage) // TODO: Uncomment in the future for power protection!
 			)
 				// this->omniGait(Vx + WEP[Vx_Offset], Vy + WEP[Vy_Offset], Vt + WEP[Vt_Offset]); // execute omni-directional gait
 				this->omniGait(
@@ -261,7 +262,7 @@ void mote::walking::Robot::standInitT(double speed, int time)
 		L_Arm,     // pitch, roll, elbow, vp, vr, ve
 		R_Arm;     // pitch, roll, elbow, vp, vr, ve
 
-		//update robotis joints
+	//update robotis joints
 	for (unsigned int i = 0; i <= time; i++)
 	{
 		//right leg initialize
@@ -308,10 +309,10 @@ void mote::walking::Robot::standInitT(double speed, int time)
 		L_Arm.velocityElbow = speed;
 
 		this->ik.update(speed, speed, R_Leg_Ik, L_Leg_Ik, R_Arm, L_Arm);
+		// this->_humanoid.dump();
 		std::this_thread::sleep_for(std::chrono::milliseconds(20));
 		//vTaskDelay(20);
 		std::cerr << ".";
-		// this->_humanoid.dump();
 	}
 	std::cerr << std::endl;
 }
@@ -327,6 +328,8 @@ void mote::walking::Robot::omniGait(double vx, double vy, double vt)
 		rightArm;     // pitch, roll, elbow, vp, vr, ve
 
 	double Joint_Speed = 0.3;
+
+	VERBOSE("----------- CYCLE START!!!");
 
 	/**
 	 * gait generate with for loop form 0 ~ 2 * 3.14
@@ -393,7 +396,7 @@ void mote::walking::Robot::omniGait(double vx, double vy, double vt)
 		 * Right leg initialization
 		 */
 		//if t<pi the right leg in fly state and other wise in support state
-		int S_X = 1;
+		double S_X = 1;
 		if (vx < 0.0)
 			S_X = 0.2;
 
@@ -412,6 +415,7 @@ void mote::walking::Robot::omniGait(double vx, double vy, double vt)
 		*/
 
 		// R_Leg_Ik[I_X]     = (-(cos(t)*(vx*100.0)))+ (vx * WEP[P_Body_X_Swing_Gain] * S_X * 100.0);
+
 		rightLeg.position.x =
 			(-(std::cos(t) * (vx * 100.0)))
 			+ (vx * this->configuration.walking.engine.bodySwingGain.x * S_X * 100.0);
@@ -507,18 +511,18 @@ void mote::walking::Robot::omniGait(double vx, double vy, double vt)
 
 		VERBOSE("-- Omni");
 		VERBOSE("RightLeg: " << rightLeg.position.x << ", " << rightLeg.position.y << ", " << rightLeg.position.z);
-		VERBOSE("LeftLeg: " << leftLeg.position.x << ", " << leftLeg.position.y << ", " << leftLeg.position.z);
+		// VERBOSE("LeftLeg: " << leftLeg.position.x << ", " << leftLeg.position.y << ", " << leftLeg.position.z);
 
 		//update robotis joints
 		// Update_Ik(Joint_Speed, Joint_Speed, R_Leg_Ik, L_Leg_Ik, R_Arm, L_Arm);
 		this->ik.update(Joint_Speed, Joint_Speed, rightLeg, leftLeg, rightArm, leftArm);
-		this->_humanoid.dump();
 
 		// vTaskDelay(WEP[P_Gait_Frequency]*100);
 		std::this_thread::sleep_for(std::chrono::milliseconds(
 			(unsigned int) std::round(this->configuration.walking.engine.gaitFrequency * 100))
 		);
 	}//main gait timi for ins
+	VERBOSE("----------- CYCLE END!!!");
 }
 
 //get robot state for fall detection

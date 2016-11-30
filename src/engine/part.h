@@ -91,6 +91,10 @@ class HumanoidPart:
 	public Part
 {
 public:
+	data::Vector3d com;
+	data::Vector3d rightLegPosition;
+	data::Vector3d leftLegPosition;
+
 	Head head;
 	Arm rightArm;
 	Arm leftArm;

@@ -87,33 +87,26 @@ void mote::walking::HumanoidPart::dump()
 	std::cout << "     Pitch: " << this->leftArm.angle.pitch << "(" << this->leftArm.velocity.pitch << ")" << std::endl;
 	std::cout << "     Roll : " << this->leftArm.angle.roll << "(" << this->leftArm.velocity.roll << ")" << std::endl;
 	std::cout << "     Elbow: " << this->leftArm.elbow << "(" << this->leftArm.velocityElbow << ")" << std::endl;
-	*/
 	VERBOSE("-- RightHip");
 	VERBOSE("     Pitch: " << this->rightHip.angle.pitch << "(" << this->rightHip.velocity.pitch << ")");
 	VERBOSE("     Pitch: " << (this->rightHip.angle.pitch * RAD2DEG));
-	/*
-	std::cout << "     Roll : " << this->rightHip.angle.roll << "(" << this->rightHip.velocity.roll << ")" << std::endl;
+
+	 std::cout << "     Roll : " << this->rightHip.angle.roll << "(" << this->rightHip.velocity.roll << ")" << std::endl;
 	std::cout << "     Yaw  : " << this->rightHip.angle.yaw << "(" << this->rightHip.velocity.yaw << ")" << std::endl;
 	std::cout << "-- LeftHip" << std::endl;
 	std::cout << "     Pitch: " << this->leftHip.angle.pitch << "(" << this->leftHip.velocity.pitch << ")" << std::endl;
 	std::cout << "     Roll : " << this->leftHip.angle.roll << "(" << this->leftHip.velocity.roll << ")" << std::endl;
 	std::cout << "     Yaw  : " << this->leftHip.angle.yaw << "(" << this->leftHip.velocity.yaw << ")" << std::endl;
-	*/
 	std::cout << "-- RightLeg" << std::endl;
-	/*
 	std::cout << "     Pitch: " << this->rightLeg.angle.pitch << std::endl;
 	std::cout << "     Roll : " << this->rightLeg.angle.roll << std::endl;
 	std::cout << "     Yaw  : " << this->rightLeg.angle.yaw << std::endl;
-	*/
 	std::cout << "     Pos  : (" << this->rightLeg.position.x << ", " << this->rightLeg.position.y << ", " << this->rightLeg.position.z << ")" << std::endl;
 	std::cout << "-- LeftLeg" << std::endl;
-	/*
 	std::cout << "     Pitch: " << this->leftLeg.angle.pitch << std::endl;
 	std::cout << "     Roll : " << this->leftLeg.angle.roll << std::endl;
 	std::cout << "     Yaw  : " << this->leftLeg.angle.yaw << std::endl;
-	*/
 	std::cout << "     Pos  : (" << this->leftLeg.position.x << ", " << this->leftLeg.position.y << ", " << this->leftLeg.position.z << ")" << std::endl;
-	/*
 	std::cout << "-- RightKnee" << std::endl;
 	std::cout << "     Angle: " << this->rightKnee.angle << std::endl;
 	std::cout << "     Vel  : " << this->rightKnee.velocity << std::endl;

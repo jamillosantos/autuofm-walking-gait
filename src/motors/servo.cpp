@@ -4,3 +4,11 @@
  */
 
 #include "servo.h"
+
+mote::walking::motors::Servo::Servo(bool inverted)
+	: inverted(inverted)
+{ }
+
+mote::walking::motors::Servo::Servo()
+	: Servo(false)
+{ }

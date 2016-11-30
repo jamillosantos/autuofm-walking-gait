@@ -94,7 +94,7 @@
 		"com": {
 			"positionOffset": {
 				"x": 0,
-				"y": 0,
+				"y": 35,
 				"z": 110
 			},
 			"angleOffset": {
@@ -107,7 +107,7 @@
 			"hipAngleOffset": {
 				"yaw": 0,
 				"roll": 0,
-				"pitch": 0
+				"pitch": 0.1
 			},
 			"kneeOffset": 0,
 			"footOffset": {
@@ -115,8 +115,8 @@
 				"roll": 0
 			},
 			"positionOffset": {
-				"x": 0,
-				"y": 0,
+				"x": 4,
+				"y": 10,
 				"z": 0
 			},
 			"angleOffset": {
@@ -129,7 +129,7 @@
 			"hipAngleOffset": {
 				"yaw": 0,
 				"roll": 0,
-				"pitch": 0
+				"pitch": 0.1
 			},
 			"kneeOffset": 0,
 			"footOffset": {
@@ -137,8 +137,8 @@
 				"roll": 0
 			},
 			"positionOffset": {
-				"x": 0,
-				"y": 0,
+				"x": -4,
+				"y": 10,
 				"z": 0
 			},
 			"angleOffset": {

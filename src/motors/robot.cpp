@@ -54,6 +54,9 @@ mote::walking::motors::Servo *mote::walking::motors::Robot::add(Servo* servo)
 
 void mote::walking::motors::Robot::update()
 {
+	this->rightLegPosition = this->_humanoidPart.rightLegPosition;
+	this->leftLegPosition = this->_humanoidPart.leftLegPosition;
+
 	this->neck.lateral->angle = this->_humanoidPart.head.position.tilt;
 	this->neck.transversal->angle = this->_humanoidPart.head.position.pan;
 

@@ -96,6 +96,12 @@ class Servo
 public:
 	Value<double> speed;
 	Value<double> angle;
+
+	bool inverted;
+
+	Servo(bool inverted);
+
+	Servo();
 };
 }
 }

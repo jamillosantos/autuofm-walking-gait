@@ -18,7 +18,7 @@ class SimuServo
 	: public Servo
 {
 public:
-	SimuServo(const std::string &name);
+	SimuServo(const std::string &name, bool inverted = false);
 	std::string name;
 };
 }

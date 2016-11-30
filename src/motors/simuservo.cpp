@@ -5,5 +5,6 @@
 
 #include "simuservo.h"
 
-mote::walking::motors::SimuServo::SimuServo(const std::string &name) : name(name)
+mote::walking::motors::SimuServo::SimuServo(const std::string &name, bool inverted)
+	: Servo(inverted), name(name)
 { }

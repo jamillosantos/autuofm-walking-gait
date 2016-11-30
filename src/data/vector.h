@@ -48,6 +48,12 @@ public:
 		if (!yJson.isNull())
 			this->y = yJson.asDouble();
 	}
+
+	virtual void toJson(Json::Value &json)
+	{
+		json["x"] = this->x;
+		json["y"] = this->y;
+	}
 };
 
 template<typename T>
@@ -78,11 +84,31 @@ public:
 		this->x = this->y = this->z = 0;
 	}
 
+	Vector3<T>& operator=(const Vector3<T>& source)
+	{
+		this->x = source.x;
+		this->y = source.y;
+		this->z = source.z;
+	}
+
+	Vector3<T>& operator/=(const double factor)
+	{
+		this->x /= factor;
+		this->y /= factor;
+		this->z /= factor;
+	}
+
 	virtual void fromJson(const Json::Value &json) override
 	{
 		Vector2<T>::fromJson(json);
 		const Json::Value &zJson = json["z"];
 		this->z = zJson.asDouble();
+	}
+
+	void toJson(Json::Value &json) override
+	{
+		Vector2<T>::toJson(json);
+		json["z"] = this->z;
 	}
 };
 

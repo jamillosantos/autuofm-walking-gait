@@ -85,6 +85,11 @@ protected:
 	Servo* add(Servo* servo);
 	void clear();
 public:
+	data::Vector3d com;
+
+	data::Vector3d rightLegPosition;
+	data::Vector3d leftLegPosition;
+
 	robot::Neck neck;
 
 	robot::Arm rightArm;
