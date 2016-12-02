@@ -61,6 +61,8 @@ void mote::walking::configuration::Walking::fromJson(const Json::Value &json)
 			this->fall.fromJson(*it);
 		else if (name == "legLength")
 			this->legLength = it->asDouble();
+		else if (name == "armSwingLength")
+			this->armSwingLength = it->asDouble();
 		else if (name == "velocityOffset")
 			this->velocityOffset.fromJson(*it);
 		else if (name == "engine")
@@ -241,6 +243,8 @@ void mote::walking::configuration::Arm::fromJson(const Json::Value &json)
 			this->angleOffset.fromJson(*it);
 		else if (name == "elbowOffset")
 			this->elbowOffset = it->asDouble();
+		else if (name == "positionOffset")
+			this->positionOffset.fromJson(*it);
 		else
 		{
 			// TODO: Throw an exception

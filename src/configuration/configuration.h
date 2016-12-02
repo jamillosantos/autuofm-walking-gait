@@ -122,6 +122,8 @@ public:
 	Angle2d angleOffset;
 	double elbowOffset;
 
+	Vector3d positionOffset;
+
 	virtual void fromJson(const Json::Value &json) override;
 };
 
@@ -136,6 +138,7 @@ public:
 	Fall fall;
 
 	double legLength;
+	double armSwingLength;
 
 	Vector2td velocityOffset; // = Vector3d(-0.07, 0.0, 0.001);
 
