@@ -19,7 +19,7 @@
 		},
 		"engine": {
 			"motionResolution": 0.01,
-			"gaitFrequency": 0.001,
+			"gaitFrequency": 0.0005,
 			"doubleSupportSleep": 0.5,
 			"singleSupportSleep": 0,
 			"flyGain": {

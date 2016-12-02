@@ -148,6 +148,7 @@ void mote::walking::Robot::standInitT(double speed)
 //omni directional gaite generation
 void mote::walking::Robot::omniGait(double vx, double vy, double vt)
 {
+	VERBOSE("Begin cycle");
 	// for (double t = 0; t <= (Math.PI * 2); t += WEP[P_Motion_Resolution])
 	for (double t = 0; t <= M_2xPIl; t += this->configuration.walking.engine.motionResolution)
 	{
@@ -219,6 +220,7 @@ void mote::walking::Robot::omniGait(double vx, double vy, double vt)
 			this->nop(100);
 		}
 	} //omni for 0 to Pi
+	VERBOSE("End cycle");
 }
 
 //get robot state for fall detection

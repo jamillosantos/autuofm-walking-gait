@@ -31,10 +31,7 @@ void mote::walking::motors::SimuMotorUpdater::flushChanges()
 		{
 			Json::Value &jsonServo = params[simuServo->name];
 			if (simuServo->angle.is_dirty())
-			{
 				jsonServo["Angle"] = (float)((*simuServo->angle.toWrite()) * RAD2DEG * (simuServo->inverted ? -1 : 1));
-				jsonServo["AngleR"] = (float)((*simuServo->angle.toWrite()) * (simuServo->inverted ? -1 : 1));
-			}
 			if (simuServo->speed.is_dirty())
 				jsonServo["Speed"] = (*simuServo->speed.toWrite()) * (1023);
 		}
@@ -53,7 +50,8 @@ void mote::walking::motors::SimuMotorUpdater::flushChanges()
 	tmp.toJson(params["RightArmMarker"]["Position"]);
 	tmp = this->_robot.leftArmPosition;
 	tmp.toJson(params["LeftArmMarker"]["Position"]);
-	std::cout << params;
+	Json::FastWriter writer;
+	std::cout << writer.write(json) << std::endl;
 	this->_client.send(json);
 }
 
