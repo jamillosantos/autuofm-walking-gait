@@ -10,519 +10,215 @@ void mote::walking::Robot::run()
 	this->_running = true;
 
 	this->init();
-	this->velocity.zero();
-	// Buzzer(200);
-
-	VERBOSE("Stand init 1!");
-	this->standInitT(0.05, 1);
 	std::this_thread::sleep_for(std::chrono::seconds(1));
-	//stand for first time
-	VERBOSE("Stand init 2!");
-	this->standInitT(0.05, 300);
 
 	this->Check_Robot_Fall = 1; // Check_Robot_Fall==1;??
 
+	const configuration::Walking conf = this->configuration.walking;
+
+	// double vx = Vx;
+	double vx = this->velocity.x;
+	// double vy = Vy;
+	double vy = this->velocity.y;
+	// double vt = Vt;
+	double vt = this->velocity.theta;
+
 	VERBOSE("Starting main loop!");
 	//main task loop
+	// while (true)
 	while (this->_running)
 	{
-		// VERBOSE("Tick!");
-		// togglePin(RED_LED_485EXP);
-
-		if ((
-				(
-					(this->velocity.x != 0)
-					|| (this->velocity.y != 0)
-					|| (this->velocity.theta != 0)
-				)
-				&& (this->Motion_Ins == No_Motion)
-				&& (this->Internal_Motion_Request == No_Motion)
-			)
-			// OLD LINE: && (this->System_Voltage >= (int)WEP[P_Min_Voltage_Limit])
-			// TODO Uncomment "NEW LINE" (below) after plugging in the system voltage controller
-			// NEW LINE: && (this->System_Voltage >= this->configuration.walking.minVoltage)
-		) {
-			VERBOSE("Robot1");
-			this->standInitT(0.5, 50);
+		VERBOSE("");
+		// if (((Vx != 0) || (Vy != 0) || (Vt != 0)) && (Motion_Ins == 0))
+		if (((this->velocity.x != 0) || (this->velocity.y != 0) || (this->velocity.theta != 0)) && (this->Motion_Ins == No_Motion))
+		{
+			// Stand_Init_T(50);
+			this->standInitT(50);
 
 			//start gait
-			// WEP[P_Left_Leg_Y_Offset]=-50;
-			this->configuration.walking.leftLeg.positionOffset.y  = -50;
-			// WEP[P_Right_Leg_Y_Offset]=50;
-			this->configuration.walking.rightLeg.positionOffset.y = 50;
-
-			this->standInitT(1.0, 4);  // last one was 2
-
-			// NEW: Probably we will not need this line anymore, since all parameters are loaded when it starts.
-			// Set_Walk_Engine_Parameters((byte)Teen_Size_Robot_Num);
-
-			//this->omniGait(WEP[Vx_Offset], WEP[Vy_Offset], WEP[Vt_Offset]); //execute omni-directional start gait
-			this->omniGait(
-				this->configuration.walking.velocityOffset.x,
-				this->configuration.walking.velocityOffset.y,
-				this->configuration.walking.velocityOffset.theta
-			); //execute omni-directional start gait
+			// Omni_Gait(WEP[Vx_Offset], WEP[Vy_Offset], WEP[Vt_Offset]); //execute omni-directional start gait
+			this->omniGait(conf.velocityOffset.x, conf.velocityOffset.y, conf.velocityOffset.theta); //execute omni-directional start gait
 
 			//main gait
-			while((
-					(
-						(this->velocity.x != 0)
-						|| (this->velocity.y != 0)
-						|| (this->velocity.theta != 0)
-					)
-					&& (this->Motion_Ins == No_Motion)
-					&& (this->Internal_Motion_Request == No_Motion)
-				  )
-				  // && (this->System_Voltage >= (int)WEP[P_Min_Voltage_Limit])
-				  // && (this->System_Voltage >= this->configuration.walking.minVoltage) // TODO: Uncomment in the future for power protection!
-			)
-				// this->omniGait(Vx + WEP[Vx_Offset], Vy + WEP[Vy_Offset], Vt + WEP[Vt_Offset]); // execute omni-directional gait
-				this->omniGait(
-					this->velocity.x + this->configuration.walking.velocityOffset.x,
-					this->velocity.y + this->configuration.walking.velocityOffset.y,
-					this->velocity.theta + this->configuration.walking.velocityOffset.theta
-				); // execute omni-directional gait
+			// while (((Vx != 0) || (Vy != 0) || (Vt != 0)) && (Motion_Ins == 0))
+			while (((this->velocity.x != 0) || (this->velocity.y != 0) || (this->velocity.theta != 0)) &&
+				   (this->Motion_Ins == No_Motion))
+			{
+				//increase the speed
+				// if (Vx > vx) vx += 0.05;
+				if (this->velocity.x > vx) vx += 0.05;
+				// if (Vx < vx) vx -= 0.05;
+				if (this->velocity.x < vx) vx -= 0.05;
 
-			//finish gate
-			// this->omniGait(WEP[Vx_Offset], WEP[Vy_Offset], WEP[Vt_Offset]); //execute omni-directional end gait
-			this->omniGait(
-				this->configuration.walking.velocityOffset.x,
-				this->configuration.walking.velocityOffset.y,
-				this->configuration.walking.velocityOffset.theta
-			); //execute omni-directional end gait
+				// if (Vy > vy) vy += 0.05;
+				if (this->velocity.y > vy) vy += 0.05;
+				// if (Vy < vy) vy -= 0.05;
+				if (this->velocity.y < vy) vy -= 0.05;
+
+				// if (Vt > vt) vt += 0.05;
+				if (this->velocity.theta > vt) vt += 0.05;
+				// if (Vt < vt) vt -= 0.05;
+				if (this->velocity.theta < vt) vt -= 0.05;
+
+
+				//check the max and min
+				if (vx > 1.0) vx = 1.0;
+				if (vx < -1.0) vx = -1.0;
+
+				if (vy > 1.0) vy = 1.0;
+				if (vy < -1.0) vy = -1.0;
+
+				if (vt > 1.0) vt = 1.0;
+				if (vt < -1.0) vt = -1.0;
+
+				// Omni_Gait(vx + WEP[Vx_Offset], vy + WEP[Vy_Offset], Vt + WEP[Vt_Offset]); //execute omni-directional gait
+				this->omniGait(vx + conf.velocityOffset.x, vy + conf.velocityOffset.y, vt + conf.velocityOffset.theta); //execute omni-directional gait
+			}
 		}
 		else
 		{
-			//firts run gait generation with vx=vy=vt=0 for semi gait generation to stand position
-			if (this->Internal_Motion_Request == No_Motion)
-				this->standInit(0.5);
-
-			if (this->Internal_Motion_Request == Stop_Motion)
-				this->standInit(0.05);
-
-			//vTaskDelay(20);
-			std::this_thread::sleep_for(std::chrono::milliseconds(20));
-
-			//run standup motions
-			switch(this->Internal_Motion_Request)
-			{ //check for instrcation
-				case Stand_Up_Front:
-					//run stand up
-					// vTaskDelay(1000);
-					std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-
-					this->Check_Robot_Fall = 0;
-					this->Actuators_Update = 1;
-					this->standInitT(1.0, 10);
-
-					// TODO: Uncomment line below!
-					// Motion_Stand_Up_Front((byte)Teen_Size_Robot_Num);
-
-					this->Internal_Motion_Request = No_Motion;
-					this->standInitT(1.0, 10);
-					this->Check_Robot_Fall = 1;
-					break;
-
-				case Stand_Up_Back:
-					//run stand up
-					// vTaskDelay(1000);
-					std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-
-					Check_Robot_Fall = 0;
-					Actuators_Update = 1;
-					this->standInitT(1.0, 10);
-
-					// TODO: Uncomment line below!
-					// Motion_Stand_Up_Back((byte)Teen_Size_Robot_Num);
-
-					Internal_Motion_Request = No_Motion;
-					this->standInitT(1.0, 10);
-					Check_Robot_Fall=1;
-					break;
-			}
-
-			// TODO: Add support for recorded motions.
+			this->standInitT(50);
 			/*
-			//run the motion
-			switch(Motion_Ins)
-			{  //check for instrcation
-				case (byte)Motion_1:
-					//run motion 1
-					//initialize head joint
-					this->setHead(0,0.5,500,500);
-					this->standInitT(1.0, 25);
-					Run_R_Kik_Motion((byte)Teen_Size_Robot_Num);
-					this->standInitT(1.0, 70);
-					Motion_Ins=No_Motion;
-					break;
-
-				case (byte)Motion_2:
-					//run motion 2
-					this->setHead(0,0.5,500,500);
-					this->standInitT(1.0, 25);
-					Run_L_Kik_Motion((byte)Teen_Size_Robot_Num);
-					this->standInitT(1.0, 70);
-					Motion_Ins = No_Motion;
-					break;
-
-				case (byte)Motion_3:
-					this->standInitT(1.0, 10);
-					Motion_Ins = No_Motion;
-					break;
-
-				case (byte)Motion_4:
-					this->standInitT(1.0, 10);
-					Motion_Ins = No_Motion;
-					break;
-
-				case (byte)Motion_5:
-					Motion_Ins = No_Motion;
-					break;
-
-				case (byte)Motion_6:
-					Motion_Ins = No_Motion;
-					break;
-
-				case (byte)Motion_7:
-					Motion_Ins = No_Motion;
-					break;
-
-				case (byte)Motion_8:
-					Motion_Ins = No_Motion;
-					break;
-
-				case (byte)Motion_9:
-					Motion_Ins = No_Motion;
-					break;
-
-				case (byte)Motion_10:
-					Motion_Ins = No_Motion;
-					break;
-			}//external motion request switch
+			// TODO: insert motion run here!!!!!!!
+			if(Motion_Ins==1)
+			{
+				Run_Static_Motion_1(1000);
+				Stand_Init_T(50);
+			}
 			*/
-		}//main if/else
-		// this->_humanoid.dump();
+		}
+		std::this_thread::sleep_for(std::chrono::milliseconds(20));
 	}
 }
 
 void mote::walking::Robot::init()
 {
-	VERBOSE("Initialization started!");
-	this->standInit(0.1);  //ititialie robot to stand position
-
 	this->velocity.zero();
 	this->velocity.theta = 0;
+	// this->velocity.x = 0.1;
 
-	Motion_Ins = No_Motion;
-	Internal_Motion_Request = No_Motion;
-	VERBOSE("ok!");
-}
-
-void mote::walking::Robot::standInit(double speed)
-{
-	Leg
-		leftLeg, rightLeg;
-	Arm
-		leftArm, rightArm;
-
-	/*
-	double L_Leg_Ik[6];  // x, y, z, roll, pitch, yaw
-	double R_Leg_Ik[6];  // x, y, z, roll, pitch, yaw
-	double L_Arm[6];     // pitch, roll, elbow, vp, vr, ve
-	double R_Arm[6];     // pitch, roll, elbow, vp, vr, ve
-	*/
-
-	leftLeg.zero();
-	rightLeg.zero();
-	leftArm.zero();
-	rightArm.zero();
-
-	leftLeg.zero();
-	rightLeg.zero();
-
-	leftArm.zero();
-	leftArm.velocity.pitch = leftArm.velocity.roll = leftArm.velocityElbow = speed;
-
-	//left arm initialize
-	rightArm.zero();
-	rightArm.velocity.pitch = rightArm.velocity.roll = rightArm.velocityElbow = speed;
-
-	//update robotis joints
-	// this->Update_Ik(_Speed, _Speed, R_Leg_Ik, L_Leg_Ik, R_Arm, L_Arm);
-	this->ik.update(speed, speed, rightLeg, leftLeg, rightArm, leftArm);
+	this->Motion_Ins = No_Motion;
+	this->Internal_Motion_Request = No_Motion;
 }
 
 //initialize robot to stand
-void mote::walking::Robot::standInitT(double speed, int time)
+void mote::walking::Robot::standInitT(double speed)
 {
-	Leg
-		L_Leg_Ik,  // x, y, z, roll, pitch, yaw
-		R_Leg_Ik;  // x, y, z, roll, pitch, yaw
-	Arm
-		L_Arm,     // pitch, roll, elbow, vp, vr, ve
-		R_Arm;     // pitch, roll, elbow, vp, vr, ve
+	this->_humanoid.rightHip.velocity.yaw = speed;
+	this->_humanoid.rightHip.velocity.roll = speed;
+	this->_humanoid.rightHip.velocity.pitch = speed;
 
-	//update robotis joints
-	for (unsigned int i = 0; i <= time; i++)
-	{
-		//right leg initialize
-		// R_Leg_Ik.position.x[I_X] = 0.0;
-		// R_Leg_Ik.position.y[I_Y] = 0.0;
-		// R_Leg_Ik.position.z[I_Z] = 0.0;
-		// R_Leg_Ik[I_Roll] = 0.0;
-		// R_Leg_Ik[I_Pitch] = 0.0;
-		// R_Leg_Ik[I_Yaw] = 0.0;
-		R_Leg_Ik.zero();
+	this->_humanoid.rightKnee.velocity = speed;
 
-		//left leh initialize
-		// L_Leg_Ik[I_X] = 0.0;
-		// L_Leg_Ik[I_Y] = 0.0;
-		// L_Leg_Ik[I_Z] = 0.0;
-		// L_Leg_Ik[I_Roll] = 0.0;
-		// L_Leg_Ik[I_Pitch] = 0.0;
-		// L_Leg_Ik[I_Yaw] = 0.0;
-		L_Leg_Ik.zero();
+	this->_humanoid.rightFoot.velocity.pitch = speed;
+	this->_humanoid.rightFoot.velocity.roll = speed;
 
-		//right arm initialize
-		// R_Arm[I_A_Pitch] = 0.0;
-		// R_Arm[I_A_Roll] = 0.0;
-		// R_Arm[I_A_Elbow] = 0.0;
-		R_Arm.angle.zero();
-		R_Arm.elbow = 0.0;
+	this->_humanoid.leftHip.velocity.yaw = speed;
+	this->_humanoid.leftHip.velocity.roll = speed;
+	this->_humanoid.leftHip.velocity.pitch = speed;
 
-		// R_Arm[I_A_Vp] = _Speed;
-		// R_Arm[I_A_Vr] = _Speed;
-		// R_Arm[I_A_Ve] = _Speed;
-		R_Arm.velocity.set(speed);
-		R_Arm.velocityElbow = speed;
+	this->_humanoid.leftKnee.velocity = speed;
 
-		//left arm initialize
-		// L_Arm[I_A_Pitch] = 0.0;
-		// L_Arm[I_A_Roll] = 0.0;
-		// L_Arm[I_A_Elbow] = 0.0;
-		L_Arm.angle.zero();
-		L_Arm.elbow = 0.0;
-		// L_Arm[I_A_Vp] = _Speed;
-		// L_Arm[I_A_Vr] = _Speed;
-		// L_Arm[I_A_Ve] = _Speed;
-		L_Arm.velocity.set(speed);
-		L_Arm.velocityElbow = speed;
+	this->_humanoid.leftFoot.velocity.pitch = speed;
+	this->_humanoid.leftFoot.velocity.roll = speed;
 
-		this->ik.update(speed, speed, R_Leg_Ik, L_Leg_Ik, R_Arm, L_Arm);
-		// this->_humanoid.dump();
-		std::this_thread::sleep_for(std::chrono::milliseconds(20));
-		//vTaskDelay(20);
-		std::cerr << ".";
-	}
-	std::cerr << std::endl;
+	this->_humanoid.rightArm.velocityElbow = speed;
+	this->_humanoid.rightArm.velocity.roll = speed;
+	this->_humanoid.rightArm.velocity.pitch = speed;
+
+	this->_humanoid.leftArm.velocityElbow = speed;
+	this->_humanoid.leftArm.velocity.roll = speed;
+	this->_humanoid.leftArm.velocity.pitch = speed;
+
+	this->_humanoid.rightLeg.position.zero();
+	this->_humanoid.rightLeg.angle.zero();
+	this->_humanoid.leftLeg.position.zero();
+	this->_humanoid.leftLeg.angle.zero();
+
+	this->_humanoid.rightArm.position.zero();
+	this->_humanoid.leftArm.position.zero();
+
+	// this->_humanoid.rightLeg.position.x = 110;
+	// this->_humanoid.rightLeg.position.y = 110;
+	// this->_humanoid.rightLeg.position.z = 110;
+
+	this->ik.update();
 }
 
 //omni directional gaite generation
 void mote::walking::Robot::omniGait(double vx, double vy, double vt)
 {
-	Leg
-		leftLeg,  // x, y, z, roll, pitch, yaw
-		rightLeg;  // x, y, z, roll, pitch, yaw
-	Arm
-		leftArm,     // pitch, roll, elbow, vp, vr, ve
-		rightArm;     // pitch, roll, elbow, vp, vr, ve
-
-	double Joint_Speed = 0.3;
-
-	VERBOSE("----------- CYCLE START!!!");
-
-	/**
-	 * gait generate with for loop form 0 ~ 2 * 3.14
-	 */
-	// for (double t = 0; t <= TwoPi ; t += WEP[P_Motion_Resolution])
+	// for (double t = 0; t <= (Math.PI * 2); t += WEP[P_Motion_Resolution])
 	for (double t = 0; t <= M_2xPIl; t += this->configuration.walking.engine.motionResolution)
 	{
-		if (vx > 0.3)
-			vx = 0.3;
-		if (vx < -0.3)
-			vx = -0.3;
+		// Walk_Thr_Cnt++;
+		this->walkThreadCount++;
 
-		if (vy > 0.4)
-			vy = 0.4;
-		if (vy < -0.4)
-			vy = -0.4;
-
-		if (vt > 0.05)
-			vt = 0.05;
-		if (vt < -0.05)
-			vt = -0.05;
-
-		//-----------------------
+		// if (((t >= Math.PI - WEP[P_Motion_Resolution]) && (t <= Math.PI + WEP[P_Motion_Resolution])) || ((t >= (Math.PI * 2) - WEP[P_Motion_Resolution]) && (t <= (Math.PI * 2) + WEP[P_Motion_Resolution])) || (t == 0.0))
 		if (
 			(
-				// (t >= Pi-WEP[P_Motion_Resolution])
-				(t >= (M_PIl - this->configuration.walking.engine.motionResolution))
-				// && (t <= Pi+WEP[P_Motion_Resolution])
-				&& (t <= (M_PIl + this->configuration.walking.engine.motionResolution))
+				(t >= M_PIl - this->configuration.walking.engine.motionResolution)
+				&& (t <= M_PIl + this->configuration.walking.engine.motionResolution)
 			)
-			|| (
-				//(t >= TwoPi-WEP[P_Motion_Resolution])
-				(t >= (M_2xPIl - this->configuration.walking.engine.motionResolution))
-				// &&(t <= TwoPi+WEP[P_Motion_Resolution])
-				&& (t <= M_2xPIl + this->configuration.walking.engine.motionResolution)
+			||
+			(
+				(t >= (M_2xPIl) - this->configuration.walking.engine.motionResolution)
+				&& (t <= (M_2xPIl) + this->configuration.walking.engine.motionResolution)
 			)
 			|| (t == 0.0)
 		)
 		{
-			// vTaskDelay(WEP[P_Double_Support_Sleep]);
-			std::this_thread::sleep_for(std::chrono::milliseconds(this->configuration.walking.engine.doubleSupportSleep));
+			// for (long i = 0; i <= ((long)(WEP[P_Double_Support_Sleep] * 1000)); i++)
+			for (long i = 0; i <= ((long) (this->configuration.walking.engine.doubleSupportSleep * 1000)); i++)
+			{
+				// Update_Trajectory(vx, vy, vt, t);
+				this->updateTrajectory(vx, vy, vt, t);
+				// Update_Ik();
+				this->ik.update();
+				// NOP(100)
+				this->nop(100);
+			}
 		}
 
+		// if (((t >= (Math.PI / 2.0) - WEP[P_Motion_Resolution]) && (t <= (Math.PI / 2.0) + WEP[P_Motion_Resolution])) || ((t >= ((3.0 * Math.PI) / 2.0) - WEP[P_Motion_Resolution]) && (t <= ((3.0 * Math.PI) / 2.0) + WEP[P_Motion_Resolution])))
 		if (
 			(
-				// (t >= (Pi/2.0) - WEP[P_Motion_Resolution])
-				(t >= (M_PI_2l - this->configuration.walking.engine.motionResolution))
-				// && (t <= (Pi/2.0)+WEP[P_Motion_Resolution])
-				&& (t <= (M_PI_2l + this->configuration.walking.engine.motionResolution))
+				(t >= (M_PI_2l) - this->configuration.walking.engine.motionResolution)
+				&& (t <= (M_PI_2l) + this->configuration.walking.engine.motionResolution)
 			)
-			|| (
-				// (t >= ((3.0*Pi)/2.0)-WEP[P_Motion_Resolution])
-				(t >= (M_32_PIl - this->configuration.walking.engine.motionResolution))
-				// && (t <= ((3.0*Pi)/2.0)+WEP[P_Motion_Resolution])
-				&& (t <= (M_32_PIl + this->configuration.walking.engine.motionResolution))
+			||
+			(
+				(t >= ((3.0 * M_PIl) / 2.0) - this->configuration.walking.engine.motionResolution)
+				&& (t <= ((3.0 * M_PIl) / 2.0) + this->configuration.walking.engine.motionResolution)
 			)
 		)
 		{
-			// vTaskDelay(WEP[P_Single_Support_Sleep]);
-			std::this_thread::sleep_for(std::chrono::milliseconds(this->configuration.walking.engine.singleSupportSleep));
+			// for (long i = 0; i <= ((long)(WEP[P_Single_Support_Sleep] * 1000)); i++)
+			for (long i = 0; i <= ((long) (this->configuration.walking.engine.singleSupportSleep * 1000)); i++)
+			{
+				// Update_Trajectory(vx, vy, vt, t);
+				this->updateTrajectory(vx, vy, vt, t);
+				// Update_Ik();
+				this->ik.update();
+				// NOP(100);
+				this->nop(100);
+			}
 		}
 
-		/**
-		 * Right leg initialization
-		 */
-		//if t<pi the right leg in fly state and other wise in support state
-		double S_X = 1;
-		if (vx < 0.0)
-			S_X = 0.2;
+		// Update_Trajectory(vx, vy, vt, t);
+		this->updateTrajectory(vx, vy, vt, t);
 
-		/** This code was added by Jamillo for different offsets between forward speed and backward speed.
-		 *  It will not be added to this version of the walking gait.
-		if (vx > 0)
+		// for (long i = 0; i <= ((long)(WEP[P_Gait_Frequency] * 1000)); i++)
+		for (long i = 0; i <= ((long) (this->configuration.walking.engine.gaitFrequency * 1000)); i++)
 		{
-			WEP[P_Left_Leg_Hip_Pitch_Offset] = WEP[P_Left_Leg_Hip_Pitch_Offset_Original];
-			WEP[P_Right_Leg_Hip_Pitch_Offset] = WEP[P_Right_Leg_Hip_Pitch_Offset_Original];
+			// Update_Trajectory(vx,vy,vt,t);
+			this->updateTrajectory(vx, vy, vt, t);
+			// Update_Ik();
+			this->ik.update();
+			// NOP(100);
+			this->nop(100);
 		}
-		else if (vx < 0)
-		{
-			WEP[P_Left_Leg_Hip_Pitch_Offset] = WEP[P_Left_Leg_Hip_Pitch_Offset_Backwards];
-			WEP[P_Right_Leg_Hip_Pitch_Offset] = WEP[P_Right_Leg_Hip_Pitch_Offset_Backwards];
-		}
-		*/
-
-		// R_Leg_Ik[I_X]     = (-(cos(t)*(vx*100.0)))+ (vx * WEP[P_Body_X_Swing_Gain] * S_X * 100.0);
-
-		rightLeg.position.x =
-			(-(std::cos(t) * (vx * 100.0)))
-			+ (vx * this->configuration.walking.engine.bodySwingGain.x * S_X * 100.0);
-		// R_Leg_Ik[I_Y]     = (t<=Pi) ? (sin(t)*(WEP[P_Body_Y_Swing_Gain]*100.0)) + (sin(t)*(WEP[P_Fly_Y_Swing_Gain]*100.0)) + (cos(t-Pi)*(vy*50.0))
-		// 							: (sin(t)*(WEP[P_Body_Y_Swing_Gain]*100.0))+(cos(t-Pi)*(vy*50.0))+(sin(t)*WEP[P_Support_Y_Swing_Gain]);
-		rightLeg.position.y =
-			(t <= M_PIl)
-				? (std::sin(t) * (this->configuration.walking.engine.bodySwingGain.y * 100.0))
-				  + (std::sin(t) * (this->configuration.walking.engine.flySwingGain.y * 100.0))
-				  + (std::cos(t - M_PIl) * (vy * 50.0))
-				: (std::sin(t) * (this->configuration.walking.engine.bodySwingGain.y * 100.0))
-				  + (std::cos(t - M_PIl) * (vy * 50.0)) + (std::sin(t) * this->configuration.walking.engine.supportSwingGain.y);
-		// R_Leg_Ik[I_Z]     = (t<=Pi) ? (sin(t)*(WEP[P_Fly_Z_Swing_Gain]*100.0)) : (sin(t)*(WEP[P_Support_Z_Swing_Gain]*100.0));
-		rightLeg.position.z =
-			(t <= M_PIl)
-			? (std::sin(t) * (this->configuration.walking.engine.flySwingGain.z * 100.0))
-			: (std::sin(t) * (this->configuration.walking.engine.supportSwingGain.z * 100.0));
-		// R_Leg_Ik[I_Roll]  = (t<=Pi) ? (-sin(t)*(WEP[P_Fly_Roll_Gain])) : (-sin(t)*(WEP[P_Support_Roll_Gain]));
-		rightLeg.angle.roll =
-			(t <= M_PIl)
-			? (-std::sin(t) * this->configuration.walking.engine.flyGain.roll)
-			: (-std::sin(t) * this->configuration.walking.engine.supportGain.roll);
-		// R_Leg_Ik[I_Pitch] = (t<=Pi) ? 0.0 : (sin(t)*WEP[P_Support_Pitch_Gain]);
-		rightLeg.angle.pitch =
-			(t <= M_PIl)
-			? 0.0
-			: (std::sin(t) * this->configuration.walking.engine.supportGain.pitch);
-		// R_Leg_Ik[I_Yaw]   = (cos(t-Pi)*(vt));
-		rightLeg.angle.yaw = (std::cos(t - M_PIl) * (vt));
-
-		/**
-		 * Left leg initialization
-		 */
-		// L_Leg_Ik[I_X]     = (-(cos(t-Pi)*(vx*100.0)))+ (vx * WEP[P_Body_X_Swing_Gain] * S_X * 100.0);
-		leftLeg.position.x =
-			(-(std::cos(t - M_PIl) * (vx * 100.0)))
-			+ (vx * this->configuration.walking.engine.bodySwingGain.x * S_X * 100.0);
-		// L_Leg_Ik[I_Y]     = (t>=Pi) ? (-sin(t)*(WEP[P_Body_Y_Swing_Gain]*100.0)) + (-sin(t)*(WEP[P_Fly_Y_Swing_Gain]*100.0)) +(cos(t-Pi)*(vy*50.0))
-		// 							: (-sin(t)*(WEP[P_Body_Y_Swing_Gain]*100.0))+(cos(t-Pi)*(vy*50.0))+(sin(t)*WEP[P_Support_Y_Swing_Gain]);
-		leftLeg.position.y =
-			(t >= M_PIl)
-			? (-std::sin(t) * (this->configuration.walking.engine.bodySwingGain.y * 100.0))
-			  + (-std::sin(t) * (this->configuration.walking.engine.flySwingGain.y * 100.0))
-			  + (std::cos(t - M_PIl) * (vy * 50.0))
-			: (-std::sin(t) * (this->configuration.walking.engine.bodySwingGain.y * 100.0))
-			  + (std::cos(t - M_PIl) * (vy * 50.0))
-			  + (std::sin(t) * this->configuration.walking.engine.supportSwingGain.y);
-		// L_Leg_Ik[I_Z]     = (t>=Pi) ? ((sin(t-Pi))*(WEP[P_Fly_Z_Swing_Gain]*100.0)) : ((sin(t-Pi))*(WEP[P_Support_Z_Swing_Gain]*100.0));
-		leftLeg.position.z =
-			(t >= M_PIl)
-			? ((std::sin(t - M_PIl)) * (this->configuration.walking.engine.flySwingGain.z * 100.0))
-			: ((std::sin(t - M_PIl)) * (this->configuration.walking.engine.supportSwingGain.z * 100.0));
-		// L_Leg_Ik[I_Roll]  = (t>=Pi) ? (sin(t)*(WEP[P_Fly_Roll_Gain])) : (sin(t)*(WEP[P_Support_Roll_Gain]));
-		leftLeg.angle.roll =
-			(t >= M_PIl)
-			? (std::sin(t) * (this->configuration.walking.engine.flyGain.roll))
-			: (std::sin(t) * (this->configuration.walking.engine.supportGain.roll));
-		// L_Leg_Ik[I_Pitch] = (t>=Pi) ? 0.0 : (sin(t-Pi)*WEP[P_Support_Pitch_Gain]);
-		leftLeg.angle.pitch =
-			(t >= M_PIl)
-			? 0.0
-			: (std::sin(t - M_PIl) * this->configuration.walking.engine.supportGain.pitch);
-		// L_Leg_Ik[I_Yaw]   = (cos(t-Pi)*(vt)); //(cos(t-Pi)*(vt));
-		leftLeg.angle.yaw = (std::cos(t - M_PIl) * (vt));
-
-		//right arm initialize
-		// R_Arm[I_A_Pitch]   = ((cos(t)) * vx * 1.995); // + Arm_Hopping_Val; // + ((MPU_X+Get_E_Param(Addr_IMU_X_Angle_Offset)) * Get_E_Param(Addr_Stablizer_Arm_Pitch_Gain)*2);
-		rightArm.angle.pitch = ((std::cos(t)) * vx * 1.995); // + Arm_Hopping_Val; // + ((MPU_X+Get_E_Param(Addr_IMU_X_Angle_Offset)) * Get_E_Param(Addr_Stablizer_Arm_Pitch_Gain)*2);
-		// R_Arm[I_A_Roll]    = 0.0;
-		rightArm.angle.roll = 0.0;
-		// R_Arm[I_A_Elbow]   = 0.0;
-		rightArm.elbow = 0.0;
-		// R_Arm[I_A_Vp]      = 0.2;
-		rightArm.velocity.pitch = 0.2;
-		// R_Arm[I_A_Vr]      = 0.05;
-		rightArm.velocity.roll = 0.05;
-		// R_Arm[I_A_Ve]      = 0.05;
-		rightArm.velocityElbow = 0.05;
-
-		//left arm initialize
-		// L_Arm[I_A_Pitch]   = ((cos(t-Pi)) * vx * 1.995); // + Arm_Hopping_Val;// + ((MPU_X+Get_E_Param(Addr_IMU_X_Angle_Offset)) * Get_E_Param(Addr_Stablizer_Arm_Pitch_Gain)*2);
-		leftArm.angle.pitch = ((std::cos(t - M_PIl)) * vx * 1.995); // + Arm_Hopping_Val;// + ((MPU_X+Get_E_Param(Addr_IMU_X_Angle_Offset)) * Get_E_Param(Addr_Stablizer_Arm_Pitch_Gain)*2);
-		// L_Arm[I_A_Roll]    = 0.0;
-		leftArm.angle.roll = 0.0;
-		// L_Arm[I_A_Elbow]   = 0.0;
-		leftArm.elbow   = 0.0;
-		// L_Arm[I_A_Vp]      = 0.2;
-		leftArm.velocity.pitch = 0.2;
-		// L_Arm[I_A_Vr]      = 0.05;
-		leftArm.velocity.roll = 0.05;
-		// L_Arm[I_A_Ve]      = 0.05;
-		leftArm.velocityElbow = 0.05;
-
-		VERBOSE("-- Omni");
-		VERBOSE("RightLeg: " << rightLeg.position.x << ", " << rightLeg.position.y << ", " << rightLeg.position.z);
-		// VERBOSE("LeftLeg: " << leftLeg.position.x << ", " << leftLeg.position.y << ", " << leftLeg.position.z);
-
-		//update robotis joints
-		// Update_Ik(Joint_Speed, Joint_Speed, R_Leg_Ik, L_Leg_Ik, R_Arm, L_Arm);
-		this->ik.update(Joint_Speed, Joint_Speed, rightLeg, leftLeg, rightArm, leftArm);
-
-		// vTaskDelay(WEP[P_Gait_Frequency]*100);
-		std::this_thread::sleep_for(std::chrono::milliseconds(
-			(unsigned int) std::round(this->configuration.walking.engine.gaitFrequency * 100))
-		);
-	}//main gait timi for ins
-	VERBOSE("----------- CYCLE END!!!");
+	} //omni for 0 to Pi
 }
 
 //get robot state for fall detection
@@ -648,8 +344,10 @@ void mote::walking::Robot::setHead(double pan, double tilt, double panSpeed, dou
 	this->_humanoid.head.velocity.tilt = tiltSpeed;
 }
 
-mote::walking::Robot::Robot(mote::walking::Configuration &configuration, mote::walking::sensors::IMU &imu, HumanoidPart &humanoid)
-	: configuration(configuration), imu(imu), ik(_humanoid, configuration, imu), _humanoid(humanoid)
+mote::walking::Robot::Robot(mote::walking::Configuration &configuration, mote::walking::sensors::IMU &imu,
+	mote::walking::HumanoidPart &humanoidPublished)
+	: configuration(configuration), imu(imu), ik(_humanoid, humanoidPublished, configuration, imu),
+	  _publicHumanoidPart(humanoidPublished)
 { }
 
 void mote::walking::Robot::start()
@@ -666,4 +364,131 @@ void mote::walking::Robot::stop()
 		this->_thread->join();
 		this->_thread.reset();
 	}
+}
+
+void mote::walking::Robot::updateTrajectory(double vx, double vy, double vt, double t)
+{
+	/*
+	lock (IK_Spd)
+	{
+	 */
+	//set speed
+	// IK_Spd[R_L_Hip_Yaw] = 500 / 2;
+	this->_humanoid.rightHip.velocity.yaw = 500.0 / 2.0;
+	// IK_Spd[R_L_Hip_Roll] = 1000 / 2;
+	this->_humanoid.rightHip.velocity.roll = 1000.0 / 2.0;
+	// IK_Spd[R_L_Hip_Pitch] = 500 / 2;
+	this->_humanoid.rightHip.velocity.pitch = 500.0 / 2.0;
+	// IK_Spd[R_L_Knee] = 1000 / 2;
+	this->_humanoid.rightKnee.velocity = 1000.0 / 2.0;
+	// IK_Spd[R_L_Foot_Pitch] = 500 / 2;
+	this->_humanoid.rightFoot.velocity.pitch = 500.0 / 2.0;
+	// IK_Spd[R_L_Foot_Roll] = 1000 / 2;
+	this->_humanoid.rightFoot.velocity.roll = 1000.0 / 2.0;
+
+	// IK_Spd[L_L_Hip_Yaw] = 500 / 2;
+	this->_humanoid.leftHip.velocity.yaw = 500.0 / 2.0;
+	// IK_Spd[L_L_Hip_Roll] = 1000 / 2;
+	this->_humanoid.leftHip.velocity.roll = 1000.0 / 2.0;
+	// IK_Spd[L_L_Hip_Pitch] = 500 / 2;
+	this->_humanoid.leftHip.velocity.pitch = 500.0 / 2.0;
+	// IK_Spd[L_L_Knee] = 1000 / 2;
+	this->_humanoid.leftKnee.velocity = 1000.0 / 2.0;
+	// IK_Spd[L_L_Foot_Pitch] = 500 / 2;
+	this->_humanoid.leftFoot.velocity.pitch = 500.0 / 2.0;
+	// IK_Spd[L_L_Foot_Roll] = 1000 / 2;
+	this->_humanoid.leftFoot.velocity.roll = 1000.0 / 2.0;
+
+	// IK_Spd[R_A_Elbow] = 1000;
+	this->_humanoid.rightArm.velocityElbow = 1000;
+	// IK_Spd[R_A_Roll] = 500;
+	this->_humanoid.rightArm.velocity.roll = 500;
+	// IK_Spd[R_A_Pitch] = 1000;
+	this->_humanoid.rightArm.velocity.pitch = 1000;
+
+	// IK_Spd[L_A_Elbow] = 1000;
+	this->_humanoid.leftArm.velocityElbow = 1000;
+	// IK_Spd[L_A_Roll] = 500;
+	this->_humanoid.leftArm.velocity.roll = 500;
+	// IK_Spd[L_A_Pitch] = 1000;
+	this->_humanoid.leftArm.velocity.pitch = 1000;
+	// }
+
+	// lock (IK)
+	// {
+	double Y_Time_Shift = 10000; //for shift the Y time
+	double Roll_Time_Shift = 10000;
+
+	// IK[R_L_X_Position] = (-(Math.Cos(t) * (vx * 500.0))) + (vx * WEP[P_Body_X_Swing_Gain] * 500.0);
+	this->_humanoid.rightLeg.position.x = (-(std::cos(t) * (vx * 500.0))) + (vx * this->configuration.walking.engine.bodySwingGain.x * 500.0);
+	// IK[R_L_Y_Position] = (t <= Math.PI) ? (Math.Sin(t + (Math.PI / Y_Time_Shift)) * (WEP[P_Body_Y_Swing_Gain] * 200.0)) + (Math.Sin(t + (Math.PI / Y_Time_Shift)) * (WEP[P_Fly_Y_Swing_Gain] * 100.0)) + (Math.Cos(t - Math.PI) * (vy * 150.0))
+	// 									: (Math.Sin(t + (Math.PI / Y_Time_Shift)) * (WEP[P_Body_Y_Swing_Gain] * 200.0)) + (Math.Cos(t - Math.PI) * (vy * 50.0)) + (Math.Sin(t + (Math.PI / Y_Time_Shift)) * WEP[P_Support_Y_Swing_Gain]);
+	this->_humanoid.rightLeg.position.y =
+		(t <= M_PIl) ?
+			(std::sin(t + (M_PIl / Y_Time_Shift)) * (this->configuration.walking.engine.bodySwingGain.y * 200.0)) + (std::sin(t + (M_PIl / Y_Time_Shift)) * (this->configuration.walking.engine.flySwingGain.y * 100.0)) + (std::cos(t - M_PIl) * (vy * 150.0))
+			:
+			(std::sin(t + (M_PIl / Y_Time_Shift)) * (this->configuration.walking.engine.bodySwingGain.y * 200.0)) + (std::cos(t - M_PIl) * (vy * 50.0)) + (std::sin(t + (M_PIl / Y_Time_Shift)) * this->configuration.walking.engine.supportSwingGain.y);
+
+	//IK[R_L_Z_Position] = Math.Exp(-Math.Pow((t - 1.6) / 0.4, 2)) * (WEP[P_Fly_Z_Swing_Gain] * 200.0);
+	this->_humanoid.rightLeg.position.z = std::exp(-std::pow((t - 1.6) / 0.4, 2)) * (this->configuration.walking.engine.flySwingGain.z * 200.0);
+	// IK[R_L_R_Angle] = (t <= Math.PI) ? (-Math.Sin(t) * (WEP[P_Fly_Roll_Gain])) : (-Math.Sin(t + (Math.PI / Roll_Time_Shift)) * (WEP[P_Support_Roll_Gain]));
+	this->_humanoid.rightLeg.angle.roll = (t <= M_PIl) ? (-std::sin(t) * (this->configuration.walking.engine.flyGain.roll)) : (-std::sin(t + (M_PIl / Roll_Time_Shift)) * (this->configuration.walking.engine.supportGain.roll));
+	// IK[R_L_P_Angle] = (t <= Math.PI) ? 0.0 : (Math.Sin(t) * WEP[P_Support_Pitch_Gain]);
+	this->_humanoid.rightLeg.angle.pitch = (t <= M_PIl) ? 0.0 : (std::sin(t) * this->configuration.walking.engine.supportGain.pitch);
+	// IK[R_L_Y_Angle] = (Math.Cos(t - Math.PI) * (vt));
+	this->_humanoid.rightLeg.angle.yaw = (std::cos(t - M_PIl) * (vt));
+
+
+	// IK[L_L_X_Position] = (-(Math.Cos(t - Math.PI) * (vx * 500.0))) + (vx * WEP[P_Body_X_Swing_Gain] * 500.0);
+	this->_humanoid.leftLeg.position.x = (-(std::cos(t - M_PIl) * (vx * 500.0))) + (vx * this->configuration.walking.engine.bodySwingGain.x * 500.0);
+	// IK[L_L_Y_Position] = (t >= Math.PI) ? (-Math.Sin(t + (Math.PI / Y_Time_Shift)) * (WEP[P_Body_Y_Swing_Gain] * 200.0)) + (-Math.Sin(t + (Math.PI / Y_Time_Shift)) * (WEP[P_Fly_Y_Swing_Gain] * 100.0)) + (Math.Cos(t - Math.PI) * (vy * 150.0))
+	// 									: (-Math.Sin(t + (Math.PI / Y_Time_Shift)) * (WEP[P_Body_Y_Swing_Gain] * 200.0)) + (Math.Cos(t - Math.PI) * (vy * 50.0)) + (Math.Sin(t + (Math.PI / Y_Time_Shift)) * WEP[P_Support_Y_Swing_Gain]);
+	this->_humanoid.leftLeg.position.y =
+		(t >= M_PIl) ?
+			(-std::sin(t + (M_PIl / Y_Time_Shift)) * (this->configuration.walking.engine.bodySwingGain.y * 200.0)) + (-std::sin(t + (M_PIl / Y_Time_Shift)) * (this->configuration.walking.engine.flySwingGain.y * 100.0)) + (std::cos(t - M_PIl) * (vy * 150.0))
+			:
+			(-std::sin(t + (M_PIl / Y_Time_Shift)) * (this->configuration.walking.engine.bodySwingGain.y * 200.0)) + (std::cos(t - M_PIl) * (vy * 50.0)) + (std::sin(t + (M_PIl / Y_Time_Shift)) * this->configuration.walking.engine.supportSwingGain.y);
+	// IK[L_L_Z_Position] = Math.Exp(-Math.Pow((t - (1.6 + Math.PI)) / 0.4, 2)) * (WEP[P_Fly_Z_Swing_Gain] * 200.0);
+	this->_humanoid.leftLeg.position.z = std::exp(-std::pow((t - (1.6 + M_PIl)) / 0.4, 2)) * (this->configuration.walking.engine.flySwingGain.z * 200.0);
+	// IK[L_L_R_Angle] = (t >= Math.PI) ? (Math.Sin(t) * (WEP[P_Fly_Roll_Gain])) : (Math.Sin(t + (Math.PI / Roll_Time_Shift)) * (WEP[P_Support_Roll_Gain]));
+	this->_humanoid.leftLeg.angle.roll =
+		(t >= M_PIl) ?
+			(std::sin(t) * (this->configuration.walking.engine.flyGain.roll))
+			:
+			(std::sin(t + (M_PIl / Roll_Time_Shift)) * (this->configuration.walking.engine.supportGain.roll));
+	// IK[L_L_P_Angle] = (t >= Math.PI) ? 0.0 : (Math.Sin(t - Math.PI) * WEP[P_Support_Pitch_Gain]);
+	this->_humanoid.leftLeg.angle.pitch = (t >= M_PIl) ? 0.0 : (std::sin(t - M_PIl) * this->configuration.walking.engine.supportGain.pitch);
+	// IK[L_L_Y_Angle] = (Math.Cos(t - Math.PI) * (vt));
+	this->_humanoid.leftLeg.angle.yaw = (std::cos(t - M_PIl) * (vt));
+
+	//calculate odometery
+	// Odometer_X = (short)(Math.Abs(IK[R_L_X_Position] - IK[L_L_X_Position])*vx);
+	this->odometer.x = (short)(std::abs(this->_humanoid.rightLeg.position.x - this->_humanoid.leftLeg.position.x)*vx);
+	// Odometer_Y = (short)(Math.Abs(IK[R_L_Y_Position] + IK[L_L_Y_Position])*vy);
+	this->odometer.y = (short)(std::abs(this->_humanoid.rightLeg.position.y + this->_humanoid.leftLeg.position.y)*vy);
+	// Odometer_Z = (short)(Math.Abs(IK[R_L_Y_Angle]*314 + IK[L_L_Y_Angle]*314)*vt);
+	this->odometer.z = (short)(std::abs(this->_humanoid.rightLeg.angle.yaw*314 + this->_humanoid.leftLeg.angle.yaw*314)*vt);
+
+	//create hand motion
+	// IK[R_H_X_Position] = 0;
+	this->_humanoid.rightArm.position.x = 0;
+	// IK[R_H_Y_Position] = 0;
+	this->_humanoid.rightArm.position.y = 0;
+	// IK[R_H_Z_Position] = ((Math.Cos(t - Math.PI)) * vx * 1.65);
+	this->_humanoid.rightArm.position.z = ((std::cos(t - M_PIl)) * vx * this->configuration.walking.armSwingLength);
+
+	// IK[L_H_X_Position] = 0;
+	this->_humanoid.leftArm.position.x = 0;
+	// IK[L_H_Y_Position] = 0;
+	this->_humanoid.leftArm.position.y = 0;
+	// IK[L_H_Z_Position] = ((Math.Cos(t)) * vx * 1.65);
+	this->_humanoid.leftArm.position.z = ((std::cos(t)) * vx * this->configuration.walking.armSwingLength);
+
+	// } //lock
+}
+
+void mote::walking::Robot::nop(int times)
+{
+	// TODO: Solve this problem.
+	std::this_thread::sleep_for(std::chrono::milliseconds(times/100));
 }

@@ -43,9 +43,11 @@ public:
 	double elbow;
 	data::Angle2d velocity;
 	double velocityElbow;
+	data::Vector3d position;
 
 	virtual void zero() override;
 	virtual void zero(double velocity);
+
 };
 
 class Head
@@ -92,8 +94,6 @@ class HumanoidPart:
 {
 public:
 	data::Vector3d com;
-	data::Vector3d rightLegPosition;
-	data::Vector3d leftLegPosition;
 
 	Head head;
 	Arm rightArm;

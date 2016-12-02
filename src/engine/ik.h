@@ -18,12 +18,13 @@ class HumanoidIK
 {
 private:
 	HumanoidPart &humanoid;
+	HumanoidPart &humanoidPublished;
 	Configuration &configuration;
 	sensors::IMU &imu;
 public:
-	HumanoidIK(HumanoidPart &humanoid, Configuration& configuration, sensors::IMU &imu);
+	HumanoidIK(HumanoidPart &humanoid, HumanoidPart &humanoidPublished, Configuration& configuration, sensors::IMU &imu);
 
-	void update(double _R_Leg_Speed, double _L_Leg_Speed, Leg rightLeg, Leg leftLeg, Arm rightArm, Arm leftArm);
+	void update();
 };
 }
 }

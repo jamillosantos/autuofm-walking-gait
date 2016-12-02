@@ -65,7 +65,8 @@ private:
 	std::unique_ptr<std::thread> _thread;
 
 	Configuration &configuration;
-	HumanoidPart &_humanoid;
+	HumanoidPart _humanoid;
+	HumanoidPart &_publicHumanoidPart;
 	HumanoidIK ik;
 	sensors::IMU& imu;
 
@@ -82,11 +83,12 @@ private:
 
 	volatile bool _running;
 protected:
+	int walkThreadCount;
+	data::Vector3d odometer;
+
 	RobotState getRobotState(double roll, double pitch);
 
-	void standInit(double speed);
-
-	void standInitT(double speed, int time);
+	void standInitT(double speed);
 
 	void omniGait(double vx, double vy, double vt);
 
@@ -105,7 +107,7 @@ protected:
 	void init();
 
 public:
-	Robot(Configuration &configuration, sensors::IMU &imu, HumanoidPart &humanoid);
+	Robot(Configuration &configuration, sensors::IMU &imu, HumanoidPart &humanoidPublished);
 
 	data::Vector2td velocity;
 
@@ -113,6 +115,10 @@ public:
 	void stop();
 
 	void run();
+
+	void updateTrajectory(double vx, double vy, double vt, double t);
+
+	void nop(int times);
 };
 }
 }
