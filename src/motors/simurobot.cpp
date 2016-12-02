@@ -12,31 +12,28 @@ mote::walking::motors::SimuRobot::SimuRobot(mote::walking::HumanoidPart &humanoi
 
 void mote::walking::motors::SimuRobot::init()
 {
+	this->rightHip.transversal.reset(this->add(new SimuServo("RightHipTransversal", true)));
+	this->rightHip.frontal.reset(this->add(new SimuServo("RightHipFrontal")));
+	this->rightHip.lateral.reset(this->add(new SimuServo("RightHipLateral", true)));
+	this->rightLeg.kneeLateral.reset(this->add(new SimuServo("RightKneeLateral", true)));
+	this->rightFoot.lateral.reset(this->add(new SimuServo("RightFootLateral", true)));
+	this->rightFoot.frontal.reset(this->add(new SimuServo("RightFootFrontal")));
+
+	this->leftHip.transversal.reset(this->add(new SimuServo("LeftHipTransversal")));
+	this->leftHip.frontal.reset(this->add(new SimuServo("LeftHipFrontal", true)));
+	this->leftHip.lateral.reset(this->add(new SimuServo("LeftHipLateral")));
+	this->leftLeg.kneeLateral.reset(this->add(new SimuServo("LeftKneeLateral")));
+	this->leftFoot.lateral.reset(this->add(new SimuServo("LeftFootLateral")));
+	this->leftFoot.frontal.reset(this->add(new SimuServo("LeftFootFrontal", true)));
+
 	this->neck.lateral.reset(new SimuServo("NeckLateral"));
 	this->neck.transversal.reset(new SimuServo("NeckTransversal"));
 
-	this->rightArm.elbow.reset(new SimuServo("RightElbow"));
-	this->rightArm.shoulderLateral.reset(this->add(new SimuServo("RightShoulderLateral")));
-	this->rightArm.shoulderFrontal.reset(this->add(new SimuServo("RightShoulderFrontal")));
+	this->rightArm.elbow.reset(this->add(new SimuServo("RightElbowLateral", true)));
+	this->rightArm.shoulderLateral.reset(this->add(new SimuServo("RightShoulderLateral", true)));
+	this->rightArm.shoulderFrontal.reset(this->add(new SimuServo("RightShoulderFrontal", true)));
 
-	this->leftArm.elbow.reset(new SimuServo("LeftElbow", true));
-	this->leftArm.shoulderLateral.reset(this->add(new SimuServo("LeftShoulderLateral", true)));
-	this->leftArm.shoulderFrontal.reset(this->add(new SimuServo("LeftShoulderFrontal", true)));
-
-	this->rightHip.lateral.reset(this->add(new SimuServo("RightHipLateral", true)));
-	this->rightHip.frontal.reset(this->add(new SimuServo("RightHipFrontal")));
-	this->rightHip.transversal.reset(this->add(new SimuServo("RightHipTransversal")));
-
-	this->leftHip.lateral.reset(this->add(new SimuServo("LeftHipLateral", false)));
-	this->leftHip.frontal.reset(this->add(new SimuServo("LeftHipFrontal", true)));
-	this->leftHip.transversal.reset(this->add(new SimuServo("LeftHipTransversal", true)));
-
-	this->rightLeg.kneeLateral.reset(this->add(new SimuServo("RightKneeLateral", true)));
-	this->leftLeg.kneeLateral.reset(this->add(new SimuServo("LeftKneeLateral", false)));
-
-	this->rightFoot.lateral.reset(this->add(new SimuServo("RightFootLateral", true)));
-	this->rightFoot.frontal.reset(this->add(new SimuServo("RightFootFrontal", true)));
-
-	this->leftFoot.lateral.reset(this->add(new SimuServo("LeftFootLateral")));
-	this->leftFoot.frontal.reset(this->add(new SimuServo("LeftFootFrontal")));
+	this->leftArm.elbow.reset(this->add(new SimuServo("LeftElbowLateral")));
+	this->leftArm.shoulderLateral.reset(this->add(new SimuServo("LeftShoulderLateral")));
+	this->leftArm.shoulderFrontal.reset(this->add(new SimuServo("LeftShoulderFrontal")));
 }

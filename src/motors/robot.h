@@ -90,6 +90,9 @@ public:
 	data::Vector3d rightLegPosition;
 	data::Vector3d leftLegPosition;
 
+	data::Vector3d rightArmPosition;
+	data::Vector3d leftArmPosition;
+
 	robot::Neck neck;
 
 	robot::Arm rightArm;

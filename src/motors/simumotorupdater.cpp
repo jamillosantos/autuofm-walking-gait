@@ -31,14 +31,17 @@ void mote::walking::motors::SimuMotorUpdater::flushChanges()
 		{
 			Json::Value &jsonServo = params[simuServo->name];
 			if (simuServo->angle.is_dirty())
-				jsonServo["Angle"] = (*simuServo->angle.toWrite()) * RAD2DEG * (simuServo->inverted ? -1 : 1);
+			{
+				jsonServo["Angle"] = (float)((*simuServo->angle.toWrite()) * RAD2DEG * (simuServo->inverted ? -1 : 1));
+				jsonServo["AngleR"] = (float)((*simuServo->angle.toWrite()) * (simuServo->inverted ? -1 : 1));
+			}
 			if (simuServo->speed.is_dirty())
 				jsonServo["Speed"] = (*simuServo->speed.toWrite()) * (1023);
 		}
 	}
-	tmp.z = this->_robot.rightLegPosition.x;
 	tmp.y = this->_robot.rightLegPosition.z;
 	tmp.x = this->_robot.rightLegPosition.y;
+	tmp.z = this->_robot.rightLegPosition.x;
 	tmp /= 1000.0;
 	tmp.toJson(params["RightLegMarker"]["Position"]);
 	tmp.z = this->_robot.leftLegPosition.x;
@@ -46,6 +49,11 @@ void mote::walking::motors::SimuMotorUpdater::flushChanges()
 	tmp.x = this->_robot.leftLegPosition.y;
 	tmp /= 1000.0;
 	tmp.toJson(params["LeftLegMarker"]["Position"]);
+	tmp = this->_robot.rightArmPosition;
+	tmp.toJson(params["RightArmMarker"]["Position"]);
+	tmp = this->_robot.leftArmPosition;
+	tmp.toJson(params["LeftArmMarker"]["Position"]);
+	std::cout << params;
 	this->_client.send(json);
 }
 
