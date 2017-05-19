@@ -48,11 +48,11 @@ set(JSONCPP_MD5 "9b51c65c563463220a8cb5fa33d525f8"
 	CACHE STRING "JSON-CPP md5")
 
 # GTest
-set(GTEST_VERSION "release-1.7.0"
+set(GTEST_VERSION "release-1.8.0"
 	CACHE STRING "GTest library's version")
 set(GTEST_URL "https://github.com/google/googletest/archive/${GTEST_VERSION}.tar.gz"
 	CACHE STRING "GTest library's git repository URL")
-set(GTEST_MD5 "4ff6353b2560df0afecfbda3b2763847"
+set(GTEST_MD5 "16877098823401d1bf2ed7891d7dce36"
 	CACHE STRING "Google Test download MD5 hash for integrity verification")
 set(GTEST_DIR "${THIRD_PARTY_LIBRARIES}/googletest-${GTEST_VERSION}"
 	CACHE STRING "GTest destiny folder")
@@ -214,8 +214,30 @@ if (NOT ${Boost_FOUND})
 	message("-- Libraries: ${Boost_LIBRARIES}")
 endif()
 message("")
+find_library(gtest gtest
+		HINTS "${GTEST_DIR}/build/debug"
+		NO_DEFAULT_PATH
+	)
+find_library(gtest_main gtest_main
+		HINTS "${GTEST_DIR}/build/debug"
+		NO_DEFAULT_PATH
+	)
+if (${gtest} STREQUAL "gtest-NOTFOUND")
+	# tries to find the default installation.
+	find_library(gtest gtest)
+endif()
+if (${gtest} STREQUAL "gtest-NOTFOUND")
+	message(FATAL_ERROR "Cannot find gtest at '${GTEST_DIR}/build/debug'.")
+else()
+	message("-- GTEST found at ${gtest}")
+	message("-- GTEST_MAIN found at ${gtest_main}")
+	# set(GTEST_INCLUDE_DIR "${JSONCPP_DIR}/install/debug")
+	# message("-- Include directory: ${JSONCPP_INCLUDE_DIR}")
+	# include_directories(${JSONCPP_INCLUDE_DIR})
+endif()
+message("")
 
-message("GTest")
+message("GTest ${GTEST_DIR}")
 if (NOT EXISTS ${GTEST_DIR})
 	message("-- Downloading GTest (${GTEST_URL})")
 	set(GTEST_TMP_FILE /tmp/gtest.tar.gz)
@@ -238,7 +260,7 @@ if (NOT EXISTS ${GTEST_DIR})
 			file(MAKE_DIRECTORY "${GTEST_DIR}/build/debug")
 			message("-- CMaking ...")
 			execute_process(
-				COMMAND cmake -config Debug ../..
+				COMMAND cmake -config Debug ../../googletest
 				WORKING_DIRECTORY "${GTEST_DIR}/build/debug"
 				OUTPUT_VARIABLE CMAKE_OUTPUT
 				RESULT_VARIABLE CMAKE_RESULT
@@ -264,6 +286,7 @@ if (NOT EXISTS ${GTEST_DIR})
 		endif()
 	endif()
 endif()
+
 message("")
 
 set(Walking_LIBRARIES
@@ -365,7 +388,7 @@ if (${ENABLE_TEST})
 		RUNTIME_OUTPUT_DIRECTORY ${TEST_OUTPUT}
 		)
 	target_link_libraries(run_tests
-		gtest gtest_main
+		${gtest} ${gtest_main}
 		${Walking_LIBRARIES}
 		)
 	foreach (testSrc ${TEST_SRCS})
